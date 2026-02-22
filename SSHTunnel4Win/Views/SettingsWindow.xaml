@@ -25,13 +25,27 @@
         </TabItem>
         <TabItem Header="{x:Static res:Strings.About}">
             <StackPanel Margin="16" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock Text="{x:Static res:Strings.SSHTunnelManager}" FontSize="18" FontWeight="Bold"
-                           HorizontalAlignment="Center" Margin="0,0,0,8"/>
-                <TextBlock HorizontalAlignment="Center" Margin="0,0,0,16">
-                    <Run Text="{x:Static res:Strings.Version}"/>
-                    <Run Text=" "/>
-                    <Run Text="{Binding Version, Mode=OneWay}"/>
-                </TextBlock>
+                <!-- App icon + name + version -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,12">
+                    <Image Source="/Assets/app-icon.ico" Width="48" Height="48" Margin="0,0,12,0"/>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="{x:Static res:Strings.SSHTunnelManager}" FontSize="18" FontWeight="Bold"/>
+                        <TextBlock Foreground="Gray">
+                            <Run Text="{x:Static res:Strings.Version}"/>
+                            <Run Text=" "/>
+                            <Run Text="{Binding Version, Mode=OneWay}"/>
+                        </TextBlock>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Copyright -->
+                <TextBlock Text="Copyright (c) 2026 TypoStudio (typ0s2d10@gmail.com)"
+                           Foreground="Gray" FontSize="11"
+                           HorizontalAlignment="Center" Margin="0,0,0,16"/>
+
+                <Separator Margin="0,0,0,16"/>
+
+                <!-- Links -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button Command="{Binding OpenGitHubCommand}" Margin="0,0,8,0" Padding="12,6">
                         <StackPanel Orientation="Horizontal">

@@ -48,7 +48,7 @@ public partial class SettingsViewModel : ObservableObject
     {
         Process.Start(new ProcessStartInfo
         {
-            FileName = "https://github.com/TypoStudio/ssh-tunnel-for-windows",
+            FileName = "https://github.com/TypoStudio/ssh-tunnel-for-win",
             UseShellExecute = true
         });
     }
