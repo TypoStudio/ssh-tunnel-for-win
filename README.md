@@ -74,6 +74,10 @@ dotnet build SSHTunnel4Win.sln -c Release
 - Windows 10 or later
 - SSH client (OpenSSH, bundled with Windows 10+)
 
+## Also Available
+
+Looking for the macOS version? Check out [SSH Tunnel Manager for macOS](https://github.com/TypoStudio/ssh-tunnel-for-macos).
+
 ## License
 
 Copyright (c) 2026 TypoStudio (typ0s2d10@gmail.com)\
@@ -115,3 +119,7 @@ Windows 시스템 트레이에서 SSH 터널을 간편하게 관리하는 네이
 
 - Windows 10 이상
 - SSH 클라이언트 (Windows 10 이상 기본 내장 OpenSSH)
+
+### macOS 버전
+
+macOS 버전은 [SSH Tunnel Manager for macOS](https://github.com/TypoStudio/ssh-tunnel-for-macos)에서 확인하세요.
