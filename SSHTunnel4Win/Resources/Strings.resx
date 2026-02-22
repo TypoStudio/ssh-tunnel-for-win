@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msOccurs="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <data name="About" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="AddDirective" xml:space="preserve">
+    <value>Add Directive</value>
+  </data>
+  <data name="AddHost" xml:space="preserve">
+    <value>Add Host</value>
+  </data>
+  <data name="AddRule" xml:space="preserve">
+    <value>Add Rule</value>
+  </data>
+  <data name="AddTunnel" xml:space="preserve">
+    <value>Add Tunnel</value>
+  </data>
+  <data name="AddTunnelHint" xml:space="preserve">
+    <value>Add a new tunnel with + or paste a share string with Ctrl+V.</value>
+  </data>
+  <data name="AdditionalSSHArguments" xml:space="preserve">
+    <value>Additional SSH Arguments</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="Authentication" xml:space="preserve">
+    <value>Authentication</value>
+  </data>
+  <data name="AutoConnectOnLaunch" xml:space="preserve">
+    <value>Auto-connect on launch</value>
+  </data>
+  <data name="BrowseBtn" xml:space="preserve">
+    <value>Browse...</value>
+  </data>
+  <data name="BuyMeACoffee" xml:space="preserve">
+    <value>Buy Me a Coffee</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="CheckForUpdates" xml:space="preserve">
+    <value>Check for Updates...</value>
+  </data>
+  <data name="CheckForUpdatesAutomatically" xml:space="preserve">
+    <value>Check for Updates Automatically</value>
+  </data>
+  <data name="CheckNow" xml:space="preserve">
+    <value>Check Now</value>
+  </data>
+  <data name="Checking" xml:space="preserve">
+    <value>Checking...</value>
+  </data>
+  <data name="ClearLog" xml:space="preserve">
+    <value>Clear Log</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="Command" xml:space="preserve">
+    <value>Command</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>Connect</value>
+  </data>
+  <data name="ConnectAnyway" xml:space="preserve">
+    <value>Connect Anyway</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>Connected</value>
+  </data>
+  <data name="Connecting" xml:space="preserve">
+    <value>Connecting...</value>
+  </data>
+  <data name="Connection" xml:space="preserve">
+    <value>Connection</value>
+  </data>
+  <data name="ConnectionLog" xml:space="preserve">
+    <value>Connection Log</value>
+  </data>
+  <data name="Copied" xml:space="preserve">
+    <value>Copied!</value>
+  </data>
+  <data name="CopyCLICommand" xml:space="preserve">
+    <value>Copy CLI Command</value>
+  </data>
+  <data name="CopyLog" xml:space="preserve">
+    <value>Copy Log</value>
+  </data>
+  <data name="CopyShareString" xml:space="preserve">
+    <value>Copy Share String</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Disconnect" xml:space="preserve">
+    <value>Disconnect</value>
+  </data>
+  <data name="DisconnectAll" xml:space="preserve">
+    <value>Disconnect All</value>
+  </data>
+  <data name="DisconnectOnQuit" xml:space="preserve">
+    <value>Disconnect on quit</value>
+  </data>
+  <data name="Disconnected" xml:space="preserve">
+    <value>Disconnected</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="DownloadManually" xml:space="preserve">
+    <value>Download Manually</value>
+  </data>
+  <data name="EditAsText" xml:space="preserve">
+    <value>Edit as Text</value>
+  </data>
+  <data name="EnableDisable" xml:space="preserve">
+    <value>Enable/Disable</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="File" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="ForwardAgent" xml:space="preserve">
+    <value>Forward Agent</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="GitHub" xml:space="preserve">
+    <value>GitHub</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>Help</value>
+  </data>
+  <data name="HelpAuthentication" xml:space="preserve">
+    <value>Authentication</value>
+  </data>
+  <data name="HelpAuthDesc" xml:space="preserve">
+    <value>Use an SSH identity file (private key) or password authentication. Passwords are stored securely.</value>
+  </data>
+  <data name="HelpDynamicDesc" xml:space="preserve">
+    <value>Dynamic (-D): Create a SOCKS proxy on the local port.</value>
+  </data>
+  <data name="HelpKeyboardShortcuts" xml:space="preserve">
+    <value>Keyboard Shortcuts</value>
+  </data>
+  <data name="HelpKeyboardShortcutsDesc" xml:space="preserve">
+    <value>Ctrl+I: Import, Ctrl+V: Paste share string, Ctrl+Q: Quit, Esc: Close dialog</value>
+  </data>
+  <data name="HelpLocalDesc" xml:space="preserve">
+    <value>Local (-L): Forward a local port to a remote destination through the SSH server.</value>
+  </data>
+  <data name="HelpMenuBar" xml:space="preserve">
+    <value>System Tray</value>
+  </data>
+  <data name="HelpMenuBarDesc" xml:space="preserve">
+    <value>Quick access to all tunnels from the system tray icon. Double-click to open the manager.</value>
+  </data>
+  <data name="HelpRemoteDesc" xml:space="preserve">
+    <value>Remote (-R): Forward a remote port on the SSH server to a local destination.</value>
+  </data>
+  <data name="HelpSSHConfig" xml:space="preserve">
+    <value>SSH Config</value>
+  </data>
+  <data name="HelpSSHConfigDesc" xml:space="preserve">
+    <value>Browse and edit SSH config entries from ~/.ssh/config and ~/.ssh/config.d/.</value>
+  </data>
+  <data name="HelpShareImport" xml:space="preserve">
+    <value>Share &amp; Import</value>
+  </data>
+  <data name="HelpShareImportDesc" xml:space="preserve">
+    <value>Share tunnel configurations as sshtunnel:// URLs. Import by pasting with Ctrl+V or using the import button.</value>
+  </data>
+  <data name="HelpTunnelManagement" xml:space="preserve">
+    <value>Tunnel Management</value>
+  </data>
+  <data name="HelpTunnelManagementDesc" xml:space="preserve">
+    <value>Create SSH tunnels with local, remote, or dynamic port forwarding. Each tunnel can have multiple port forwarding rules.</value>
+  </data>
+  <data name="HelpTunnelTypes" xml:space="preserve">
+    <value>Tunnel Types</value>
+  </data>
+  <data name="Host" xml:space="preserve">
+    <value>Host</value>
+  </data>
+  <data name="HostName" xml:space="preserve">
+    <value>Host Name</value>
+  </data>
+  <data name="IdentityFile" xml:space="preserve">
+    <value>Identity File</value>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="ImportFromShareString" xml:space="preserve">
+    <value>Import from Share String</value>
+  </data>
+  <data name="ImportTunnelConfiguration" xml:space="preserve">
+    <value>Import Tunnel Configuration?</value>
+  </data>
+  <data name="InstallAndRestart" xml:space="preserve">
+    <value>Install and Restart</value>
+  </data>
+  <data name="Key" xml:space="preserve">
+    <value>Key</value>
+  </data>
+  <data name="KillAll" xml:space="preserve">
+    <value>Kill All</value>
+  </data>
+  <data name="KillProcess" xml:space="preserve">
+    <value>Kill</value>
+  </data>
+  <data name="Later" xml:space="preserve">
+    <value>Later</value>
+  </data>
+  <data name="LaunchAtLogin" xml:space="preserve">
+    <value>Launch at login</value>
+  </data>
+  <data name="LoadFromSSHConfig" xml:space="preserve">
+    <value>Load from SSH Config</value>
+  </data>
+  <data name="LocalPort" xml:space="preserve">
+    <value>Local Port</value>
+  </data>
+  <data name="Method" xml:space="preserve">
+    <value>Method</value>
+  </data>
+  <data name="MoveDown" xml:space="preserve">
+    <value>Move Down</value>
+  </data>
+  <data name="MoveUp" xml:space="preserve">
+    <value>Move Up</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="NewTunnel" xml:space="preserve">
+    <value>New Tunnel</value>
+  </data>
+  <data name="NewVersionAvailable" xml:space="preserve">
+    <value>A new version {0} is available.</value>
+  </data>
+  <data name="NoHostSelected" xml:space="preserve">
+    <value>No Host Selected</value>
+  </data>
+  <data name="NoHostsInConfig" xml:space="preserve">
+    <value>No hosts found in ~/.ssh/config</value>
+  </data>
+  <data name="NoLogAvailable" xml:space="preserve">
+    <value>No log available.</value>
+  </data>
+  <data name="NoProcesses" xml:space="preserve">
+    <value>No running SSH tunnel processes found.</value>
+  </data>
+  <data name="NoSSHConfigFound" xml:space="preserve">
+    <value>No SSH Config Found</value>
+  </data>
+  <data name="NoTunnelSelected" xml:space="preserve">
+    <value>No Tunnel Selected</value>
+  </data>
+  <data name="NoTunnels" xml:space="preserve">
+    <value>No Tunnels</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="OpenInExternalEditor" xml:space="preserve">
+    <value>Open in External Editor</value>
+  </data>
+  <data name="OpenManager" xml:space="preserve">
+    <value>Open Manager</value>
+  </data>
+  <data name="OpenManagerOnLaunch" xml:space="preserve">
+    <value>Open manager on launch</value>
+  </data>
+  <data name="OpenInEditor" xml:space="preserve">
+    <value>Open in Editor</value>
+  </data>
+  <data name="Options" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="OtherDirectives" xml:space="preserve">
+    <value>Other Directives</value>
+  </data>
+  <data name="PID" xml:space="preserve">
+    <value>PID</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="Port" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="PortConflict" xml:space="preserve">
+    <value>Port Conflict</value>
+  </data>
+  <data name="PortConflictMessage" xml:space="preserve">
+    <value>Port {0} is already in use. The connection may fail.</value>
+  </data>
+  <data name="PortForwarding" xml:space="preserve">
+    <value>Port Forwarding</value>
+  </data>
+  <data name="Preview" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="Proxy" xml:space="preserve">
+    <value>Proxy</value>
+  </data>
+  <data name="ProxyCommand" xml:space="preserve">
+    <value>Proxy Command</value>
+  </data>
+  <data name="ProxyJump" xml:space="preserve">
+    <value>Proxy Jump</value>
+  </data>
+  <data name="Quit" xml:space="preserve">
+    <value>Quit</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="Reload" xml:space="preserve">
+    <value>Reload</value>
+  </data>
+  <data name="RemoteHost" xml:space="preserve">
+    <value>Remote Host</value>
+  </data>
+  <data name="RemotePort" xml:space="preserve">
+    <value>Remote Port</value>
+  </data>
+  <data name="RunningSSHProcesses" xml:space="preserve">
+    <value>Running SSH Processes</value>
+  </data>
+  <data name="SSHConfig" xml:space="preserve">
+    <value>SSH Config</value>
+  </data>
+  <data name="SSHTunnelManager" xml:space="preserve">
+    <value>SSH Tunnel Manager</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="SelectHostHint" xml:space="preserve">
+    <value>Select a host from the sidebar or add a new one.</value>
+  </data>
+  <data name="SelectTunnelHint" xml:space="preserve">
+    <value>Select a tunnel from the sidebar or add a new one.</value>
+  </data>
+  <data name="ServerAliveCountMax" xml:space="preserve">
+    <value>Server Alive Count Max</value>
+  </data>
+  <data name="ServerAliveInterval" xml:space="preserve">
+    <value>Server Alive Interval</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Share" xml:space="preserve">
+    <value>Share</value>
+  </data>
+  <data name="Tunnels" xml:space="preserve">
+    <value>Tunnels</value>
+  </data>
+  <data name="TunnelRules" xml:space="preserve">
+    <value>rule(s)</value>
+  </data>
+  <data name="TunnelTypeLocal" xml:space="preserve">
+    <value>Local (-L)</value>
+  </data>
+  <data name="TunnelTypeRemote" xml:space="preserve">
+    <value>Remote (-R)</value>
+  </data>
+  <data name="TunnelTypeDynamic" xml:space="preserve">
+    <value>Dynamic (-D)</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="UpToDate" xml:space="preserve">
+    <value>You're up to date.</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>Update Available</value>
+  </data>
+  <data name="UpdateFailed" xml:space="preserve">
+    <value>Update Failed</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="VersionAvailable" xml:space="preserve">
+    <value>v{0} available</value>
+  </data>
+</root>

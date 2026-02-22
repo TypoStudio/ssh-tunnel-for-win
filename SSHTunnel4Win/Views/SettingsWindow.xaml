@@ -1,0 +1,52 @@
+<Window x:Class="SSHTunnel4Win.Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:res="clr-namespace:SSHTunnel4Win.Resources"
+        Title="{x:Static res:Strings.Settings}"
+        Width="420" Height="320" ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner">
+    <TabControl Margin="8">
+        <TabItem Header="{x:Static res:Strings.General}">
+            <StackPanel Margin="16">
+                <CheckBox Content="{x:Static res:Strings.LaunchAtLogin}"
+                          IsChecked="{Binding Settings.LaunchAtLogin}" Margin="0,0,0,8"/>
+                <CheckBox Content="{x:Static res:Strings.OpenManagerOnLaunch}"
+                          IsChecked="{Binding Settings.OpenManagerOnLaunch}" Margin="0,0,0,8"/>
+                <CheckBox Content="{x:Static res:Strings.CheckForUpdatesAutomatically}"
+                          IsChecked="{Binding Settings.AutoCheckForUpdates}" Margin="0,0,0,16"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="{x:Static res:Strings.CheckNow}"
+                            Command="{Binding CheckForUpdatesCommand}"
+                            IsEnabled="{Binding IsCheckingUpdate, Converter={StaticResource InvBool}}"
+                            Margin="0,0,8,0"/>
+                    <TextBlock Text="{Binding UpdateStatus}" VerticalAlignment="Center"/>
+                </StackPanel>
+            </StackPanel>
+        </TabItem>
+        <TabItem Header="{x:Static res:Strings.About}">
+            <StackPanel Margin="16" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="{x:Static res:Strings.SSHTunnelManager}" FontSize="18" FontWeight="Bold"
+                           HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                <TextBlock HorizontalAlignment="Center" Margin="0,0,0,16">
+                    <Run Text="{x:Static res:Strings.Version}"/>
+                    <Run Text=" "/>
+                    <Run Text="{Binding Version, Mode=OneWay}"/>
+                </TextBlock>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Command="{Binding OpenGitHubCommand}" Margin="0,0,8,0" Padding="12,6">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="14" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="{x:Static res:Strings.GitHub}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{Binding OpenBuyMeACoffeeCommand}" Padding="12,6">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xED63;" FontFamily="Segoe MDL2 Assets" FontSize="14" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="{x:Static res:Strings.BuyMeACoffee}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </TabItem>
+    </TabControl>
+</Window>

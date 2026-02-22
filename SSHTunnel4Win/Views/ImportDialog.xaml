@@ -1,0 +1,29 @@
+<Window x:Class="SSHTunnel4Win.Views.ImportDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:res="clr-namespace:SSHTunnel4Win.Resources"
+        Title="{x:Static res:Strings.ImportFromShareString}"
+        Width="500" Height="400" ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner">
+    <DockPanel Margin="16">
+        <!-- Buttons -->
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button Content="{x:Static res:Strings.Cancel}" Width="80" Click="CancelClick" Margin="0,0,8,0"/>
+            <Button x:Name="ImportBtn" Content="{x:Static res:Strings.Import}" Width="80" Click="ImportClick" IsEnabled="False"/>
+        </StackPanel>
+
+        <!-- Preview -->
+        <GroupBox DockPanel.Dock="Bottom" Header="{x:Static res:Strings.Preview}" Margin="0,8,0,0" x:Name="PreviewBox" Visibility="Collapsed">
+            <StackPanel Margin="8">
+                <TextBlock x:Name="PreviewName"/>
+                <TextBlock x:Name="PreviewHost" Foreground="Gray"/>
+                <TextBlock x:Name="PreviewTunnels" Foreground="Gray"/>
+            </StackPanel>
+        </GroupBox>
+
+        <!-- Input -->
+        <TextBox x:Name="InputBox" AcceptsReturn="True" TextWrapping="Wrap"
+                 VerticalScrollBarVisibility="Auto" FontFamily="Consolas" FontSize="12"
+                 TextChanged="InputChanged"/>
+    </DockPanel>
+</Window>

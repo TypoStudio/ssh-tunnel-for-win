@@ -1,0 +1,10 @@
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.exe
+*.pfx
+*.cer
+.DS_Store
+build.log

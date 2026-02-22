@@ -1,0 +1,65 @@
+<UserControl x:Class="SSHTunnel4Win.Views.TunnelListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:res="clr-namespace:SSHTunnel4Win.Resources"
+             xmlns:conv="clr-namespace:SSHTunnel4Win.Converters">
+    <UserControl.Resources>
+        <conv:ConnectionStateToColorConverter x:Key="StateToColor"/>
+    </UserControl.Resources>
+
+    <Grid>
+        <ListBox x:Name="TunnelListBox" SelectionChanged="OnSelectionChanged"
+                 HorizontalContentAlignment="Stretch" BorderThickness="0">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="4,4,4,4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <Ellipse Grid.Column="0" Grid.RowSpan="2" Width="10" Height="10"
+                                 Fill="{Binding State, Converter={StaticResource StateToColor}}"
+                                 Margin="0,0,8,0" VerticalAlignment="Center"/>
+
+                        <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding DisplayName}"
+                                   FontWeight="Medium" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Subtitle}"
+                                   FontSize="11" Foreground="Gray" TextTrimming="CharacterEllipsis"/>
+
+                        <Border Grid.Column="2" Grid.RowSpan="2" CornerRadius="8"
+                                Background="#E0E0E0" Padding="6,2" VerticalAlignment="Center"
+                                Visibility="{Binding HasTunnels, Converter={StaticResource BoolToVis}}">
+                            <TextBlock Text="{Binding TunnelCount}" FontSize="11"/>
+                        </Border>
+
+                        <Grid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="{Binding ConnectLabel}" Click="ToggleConnect"/>
+                                <Separator/>
+                                <MenuItem Header="{x:Static res:Strings.CopyShareString}" Click="CopyShareString"/>
+                                <Separator/>
+                                <MenuItem Header="{x:Static res:Strings.Delete}" Click="DeleteTunnel"/>
+                            </ContextMenu>
+                        </Grid.ContextMenu>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <!-- Empty state -->
+        <StackPanel x:Name="EmptyState" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Visibility="Collapsed">
+            <TextBlock Text="{x:Static res:Strings.NoTunnels}" FontSize="16"
+                       Foreground="Gray" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+            <TextBlock Text="{x:Static res:Strings.AddTunnelHint}"
+                       Foreground="DarkGray" HorizontalAlignment="Center" TextWrapping="Wrap"
+                       TextAlignment="Center" MaxWidth="220"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
