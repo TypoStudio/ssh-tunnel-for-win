@@ -1,0 +1,34 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Publish
+        run: dotnet publish SSHTunnel4Win/SSHTunnel4Win.csproj -c Release -r win-x64 --self-contained true -o publish
+
+      - name: Install Inno Setup
+        run: choco install innosetup -y
+
+      - name: Build Installer
+        run: |
+          $version = "${{ github.ref_name }}".TrimStart('v')
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" scripts/setup.iss /DMyAppVersion=$version /DPublishDir=..\publish
+
+      - name: Upload Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: scripts/SSHTunnel4Win-*-setup.exe
+          generate_release_notes: true

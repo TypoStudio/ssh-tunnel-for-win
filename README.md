@@ -8,7 +8,7 @@ Windows 10+ | .NET 8 | WPF | License: GPLv3 | Download latest
 
 ### Manual Installation
 
-Download the latest release from the Releases page and run `SSHTunnel4Win.exe`.
+Download the latest `SSHTunnel4Win-x.x.x-setup.exe` from the [Releases](https://github.com/TypoStudio/ssh-tunnel-for-win/releases) page and run it.
 
 ### Build from Source
 
@@ -66,13 +66,12 @@ dotnet build SSHTunnel4Win.sln -c Release
 ## Requirements
 
 - Windows 10 or later
-- .NET 8 Runtime
 - SSH client (OpenSSH, bundled with Windows 10+)
 
 ## License
 
 Copyright (c) 2026 TypoStudio (typ0s2d10@gmail.com)
-https://github.com/TypoStudio/ssh-tunnel-for-windows
+https://github.com/TypoStudio/ssh-tunnel-for-win
 
 SSH Tunnel Manager for Windows is available under the GNU General Public License v3.0.
 
@@ -84,7 +83,7 @@ Windows 시스템 트레이에서 SSH 터널을 간편하게 관리하는 네이
 
 ### 설치
 
-Releases 페이지에서 최신 파일을 다운로드하고 `SSHTunnel4Win.exe`를 실행하세요.
+[Releases](https://github.com/TypoStudio/ssh-tunnel-for-win/releases) 페이지에서 최신 `SSHTunnel4Win-x.x.x-setup.exe`를 다운로드하고 실행하세요.
 
 ### 주요 기능
 
@@ -106,5 +105,4 @@ Releases 페이지에서 최신 파일을 다운로드하고 `SSHTunnel4Win.exe`
 ### 요구 사항
 
 - Windows 10 이상
-- .NET 8 런타임
 - SSH 클라이언트 (Windows 10 이상 기본 내장 OpenSSH)
