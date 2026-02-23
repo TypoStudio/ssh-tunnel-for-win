@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using Microsoft.Win32;
 using SSHTunnel4Win.Models;
 
 namespace SSHTunnel4Win.Services;
@@ -30,15 +31,22 @@ public class ConfigStore
 
     public void Load()
     {
-        if (!File.Exists(_filePath)) return;
-        try
+        if (File.Exists(_filePath))
         {
-            var json = File.ReadAllText(_filePath);
-            Configs = JsonSerializer.Deserialize<List<SSHTunnelConfig>>(json, JsonOptions) ?? new();
+            try
+            {
+                var json = File.ReadAllText(_filePath);
+                Configs = JsonSerializer.Deserialize<List<SSHTunnelConfig>>(json, JsonOptions) ?? new();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to load configs: {ex.Message}");
+            }
+            EnsureBackup();
         }
-        catch (Exception ex)
+        else
         {
-            System.Diagnostics.Debug.WriteLine($"Failed to load configs: {ex.Message}");
+            RestoreFromRegistry();
         }
     }
 
@@ -50,11 +58,47 @@ public class ConfigStore
             var tempPath = _filePath + ".tmp";
             File.WriteAllText(tempPath, json);
             File.Move(tempPath, _filePath, overwrite: true);
+            BackupToRegistry(json);
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Failed to save configs: {ex.Message}");
         }
+    }
+
+    private void EnsureBackup()
+    {
+        try
+        {
+            using var key = Registry.CurrentUser.OpenSubKey(@"Software\TypoStudio\SSHTunnel");
+            if (key?.GetValue("ConfigBackup") == null)
+                BackupToRegistry(JsonSerializer.Serialize(Configs, JsonOptions));
+        }
+        catch { }
+    }
+
+    private static void BackupToRegistry(string json)
+    {
+        try
+        {
+            using var key = Registry.CurrentUser.CreateSubKey(@"Software\TypoStudio\SSHTunnel");
+            key.SetValue("ConfigBackup", json);
+        }
+        catch { }
+    }
+
+    private void RestoreFromRegistry()
+    {
+        try
+        {
+            using var key = Registry.CurrentUser.OpenSubKey(@"Software\TypoStudio\SSHTunnel");
+            if (key?.GetValue("ConfigBackup") is string json)
+            {
+                Configs = JsonSerializer.Deserialize<List<SSHTunnelConfig>>(json, JsonOptions) ?? new();
+                if (Configs.Count > 0) Save();
+            }
+        }
+        catch { }
     }
 
     public void Add(SSHTunnelConfig config)

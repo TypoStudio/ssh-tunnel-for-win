@@ -33,19 +33,46 @@ public partial class AppSettings : ObservableObject
 
     private void Load()
     {
-        if (!File.Exists(FilePath)) return;
-        try
+        if (File.Exists(FilePath))
         {
-            var json = File.ReadAllText(FilePath);
-            var data = JsonSerializer.Deserialize<SettingsData>(json);
-            if (data == null) return;
-            _launchAtLogin = data.LaunchAtLogin;
-            _openManagerOnLaunch = data.OpenManagerOnLaunch;
-            _autoCheckForUpdates = data.AutoCheckForUpdates;
+            try
+            {
+                var json = File.ReadAllText(FilePath);
+                var data = JsonSerializer.Deserialize<SettingsData>(json);
+                if (data == null) return;
+                _launchAtLogin = data.LaunchAtLogin;
+                _openManagerOnLaunch = data.OpenManagerOnLaunch;
+                _autoCheckForUpdates = data.AutoCheckForUpdates;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to load settings: {ex.Message}");
+            }
+            try
+            {
+                using var key = Registry.CurrentUser.OpenSubKey(@"Software\TypoStudio\SSHTunnel");
+                if (key?.GetValue("SettingsBackup") == null) Save();
+            }
+            catch { }
         }
-        catch (Exception ex)
+        else
         {
-            Debug.WriteLine($"Failed to load settings: {ex.Message}");
+            try
+            {
+                using var key = Registry.CurrentUser.OpenSubKey(@"Software\TypoStudio\SSHTunnel");
+                if (key?.GetValue("SettingsBackup") is string json)
+                {
+                    var data = JsonSerializer.Deserialize<SettingsData>(json);
+                    if (data != null)
+                    {
+                        _launchAtLogin = data.LaunchAtLogin;
+                        _openManagerOnLaunch = data.OpenManagerOnLaunch;
+                        _autoCheckForUpdates = data.AutoCheckForUpdates;
+                        Save();
+                    }
+                }
+            }
+            catch { }
         }
     }
 
@@ -63,6 +90,12 @@ public partial class AppSettings : ObservableObject
             };
             var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(FilePath, json);
+            try
+            {
+                using var key = Registry.CurrentUser.CreateSubKey(@"Software\TypoStudio\SSHTunnel");
+                key.SetValue("SettingsBackup", json);
+            }
+            catch { }
         }
         catch (Exception ex)
         {
