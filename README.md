@@ -34,6 +34,7 @@ dotnet build SSHTunnel4Win.sln -c Release
 - [x] Disconnect on quit per tunnel
 - [x] Port conflict detection before connecting
 - [x] Real-time connection log viewer in a separate window
+- [x] Auto-reconnect on network recovery
 - [x] Auto-backup and restore settings across reinstalls
 
 ### SSH Config Integration
@@ -106,6 +107,7 @@ Windows 시스템 트레이에서 SSH 터널을 간편하게 관리하는 네이
 - **공유 및 가져오기** — `sshtunnel://` URL로 설정 공유, 붙여넣기로 가져오기
 - **시스템 트레이** — 시스템 트레이에서 빠른 연결/해제, SSH 프로세스 모니터링
 - **설정** — 시작 시 자동 실행, 시작 시 매니저 열기
+- **자동 재연결** — 네트워크 복구 시 끊어진 터널 자동 재연결
 - **설정 백업** — 앱 재설치 시 터널 설정 자동 복원
 - **다국어** — 영어, 한국어 지원
 
