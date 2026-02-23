@@ -4,7 +4,7 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationIcon Condition="Exists('Assets\app-icon.ico')">Assets\app-icon.ico</ApplicationIcon>
-    <Version>1.0.1</Version>
+    <Version>1.1.0</Version>
     <AssemblyTitle>SSH Tunnel Manager</AssemblyTitle>
     <Company>TypoStudio</Company>
     <Product>SSH Tunnel Manager</Product>
