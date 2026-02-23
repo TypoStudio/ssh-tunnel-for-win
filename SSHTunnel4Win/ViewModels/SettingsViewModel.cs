@@ -14,6 +14,9 @@ public partial class SettingsViewModel : ObservableObject
 
     [ObservableProperty] private string _updateStatus = "";
     [ObservableProperty] private bool _isCheckingUpdate;
+    [ObservableProperty] private bool _isUpdateAvailable;
+
+    private UpdateInfo? _latestUpdate;
 
     public string Version =>
         Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0";
@@ -27,20 +30,48 @@ public partial class SettingsViewModel : ObservableObject
     private async Task CheckForUpdates()
     {
         IsCheckingUpdate = true;
+        IsUpdateAvailable = false;
         UpdateStatus = Strings.Checking;
 
         var info = await UpdateService.CheckForUpdateAsync();
 
         if (info != null)
         {
+            _latestUpdate = info;
             UpdateStatus = string.Format(Strings.VersionAvailable, info.Version);
+            IsUpdateAvailable = true;
         }
         else
         {
+            _latestUpdate = null;
             UpdateStatus = Strings.UpToDate;
         }
 
         IsCheckingUpdate = false;
+    }
+
+    [RelayCommand]
+    private async Task InstallUpdate()
+    {
+        if (_latestUpdate == null) return;
+
+        if (_latestUpdate.InstallerUrl != null)
+        {
+            try
+            {
+                IsUpdateAvailable = false;
+                UpdateStatus = Strings.Download + "...";
+                await UpdateService.PerformUpdateAsync(_latestUpdate.InstallerUrl, _ => { });
+            }
+            catch
+            {
+                Process.Start(new ProcessStartInfo { FileName = _latestUpdate.HtmlUrl, UseShellExecute = true });
+            }
+        }
+        else
+        {
+            Process.Start(new ProcessStartInfo { FileName = _latestUpdate.HtmlUrl, UseShellExecute = true });
+        }
     }
 
     [RelayCommand]

@@ -19,7 +19,10 @@
                             Command="{Binding CheckForUpdatesCommand}"
                             IsEnabled="{Binding IsCheckingUpdate, Converter={StaticResource InvBool}}"
                             Margin="0,0,8,0"/>
-                    <TextBlock Text="{Binding UpdateStatus}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding UpdateStatus}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <Button Content="{x:Static res:Strings.InstallAndRestart}"
+                            Command="{Binding InstallUpdateCommand}"
+                            Visibility="{Binding IsUpdateAvailable, Converter={StaticResource BoolToVis}}"/>
                 </StackPanel>
             </StackPanel>
         </TabItem>

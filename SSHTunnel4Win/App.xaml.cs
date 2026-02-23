@@ -61,18 +61,31 @@ public partial class App : Application
                 var info = await UpdateService.CheckForUpdateAsync();
                 if (info != null)
                 {
-                    Dispatcher.Invoke(() =>
-                    {
-                        var result = MessageBox.Show(
+                    var result = Dispatcher.Invoke(() =>
+                        MessageBox.Show(
                             string.Format(Strings.NewVersionAvailable, info.Version),
                             Strings.UpdateAvailable,
                             MessageBoxButton.YesNo,
-                            MessageBoxImage.Information);
-                        if (result == MessageBoxResult.Yes && info.InstallerUrl != null)
+                            MessageBoxImage.Information));
+
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        if (info.InstallerUrl != null)
+                        {
+                            try
+                            {
+                                await UpdateService.PerformUpdateAsync(info.InstallerUrl, _ => { });
+                            }
+                            catch
+                            {
+                                Process.Start(new ProcessStartInfo { FileName = info.HtmlUrl, UseShellExecute = true });
+                            }
+                        }
+                        else
                         {
                             Process.Start(new ProcessStartInfo { FileName = info.HtmlUrl, UseShellExecute = true });
                         }
-                    });
+                    }
                 }
             });
         }
