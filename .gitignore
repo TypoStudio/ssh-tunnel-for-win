@@ -8,3 +8,7 @@ obj/
 *.cer
 .DS_Store
 build.log
+
+# Claude
+.claude/
+.omc/
