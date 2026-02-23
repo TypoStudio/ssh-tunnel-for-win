@@ -46,6 +46,9 @@
   <data name="AutoConnectOnLaunch" xml:space="preserve">
     <value>Auto-connect on launch</value>
   </data>
+  <data name="AutoReconnectOnDisconnect" xml:space="preserve">
+    <value>Auto-reconnect on disconnect</value>
+  </data>
   <data name="BrowseBtn" xml:space="preserve">
     <value>Browse...</value>
   </data>

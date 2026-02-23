@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,12 +20,33 @@ public class SSHProcessManager
     private readonly Dictionary<Guid, string> _tempKeyFiles = new();
     private readonly TunnelStatus _status;
 
+    // Auto-reconnect state
+    private readonly HashSet<Guid> _manualDisconnects = new();
+    private readonly HashSet<Guid> _pendingReconnect = new();
+    private readonly Dictionary<Guid, SSHTunnelConfig> _reconnectConfigs = new();
+    private readonly Dictionary<Guid, CancellationTokenSource> _reconnectTimers = new();
+    private readonly Dictionary<Guid, int> _retryCounts = new();
+    private bool _isNetworkAvailable = true;
+
     public Dictionary<Guid, string> Logs { get; } = new();
     public event Action<Guid>? LogChanged;
 
     public SSHProcessManager(TunnelStatus status)
     {
         _status = status;
+        _isNetworkAvailable = NetworkInterface.GetIsNetworkAvailable();
+        NetworkChange.NetworkAvailabilityChanged += OnNetworkAvailabilityChanged;
+    }
+
+    private void OnNetworkAvailabilityChanged(object? sender, NetworkAvailabilityEventArgs e)
+    {
+        Application.Current?.Dispatcher.Invoke(() =>
+        {
+            var wasAvailable = _isNetworkAvailable;
+            _isNetworkAvailable = e.IsAvailable;
+            if (!wasAvailable && e.IsAvailable)
+                ReconnectPending();
+        });
     }
 
     public List<ushort> CheckPortConflicts(SSHTunnelConfig config)
@@ -50,6 +72,12 @@ public class SSHProcessManager
     {
         var id = config.Id;
         if (_status.GetState(id).IsActive()) return;
+
+        _reconnectConfigs[id] = config;
+        _pendingReconnect.Remove(id);
+        CancelReconnectTimer(id);
+        _retryCounts.Remove(id);
+        _manualDisconnects.Remove(id);
 
         _status.SetState(id, ConnectionState.Connecting);
 
@@ -139,7 +167,17 @@ public class SSHProcessManager
                 else
                 {
                     _status.SetState(id, ConnectionState.Disconnected);
+                    // Auto-reconnect on unexpected disconnect
+                    if (!_manualDisconnects.Contains(id)
+                        && _reconnectConfigs.TryGetValue(id, out var cfg)
+                        && cfg.AutoReconnect)
+                    {
+                        _pendingReconnect.Add(id);
+                        if (_isNetworkAvailable)
+                            ScheduleReconnect(id);
+                    }
                 }
+                _manualDisconnects.Remove(id);
             });
         };
 
@@ -173,6 +211,11 @@ public class SSHProcessManager
 
     public void Disconnect(Guid configId)
     {
+        _manualDisconnects.Add(configId);
+        _pendingReconnect.Remove(configId);
+        CancelReconnectTimer(configId);
+        _retryCounts.Remove(configId);
+
         if (_connectTimers.TryGetValue(configId, out var cts))
         {
             cts.Cancel();
@@ -207,6 +250,55 @@ public class SSHProcessManager
     {
         foreach (var config in configs.Where(c => c.DisconnectOnQuit))
             Disconnect(config.Id);
+    }
+
+    // Auto-reconnect helpers
+
+    private void ScheduleReconnect(Guid id)
+    {
+        CancelReconnectTimer(id);
+        var count = _retryCounts.GetValueOrDefault(id, 0);
+        int[] delays = [3000, 5000, 10000, 30000, 60000];
+        var delay = delays[Math.Min(count, delays.Length - 1)];
+        var cts = new CancellationTokenSource();
+        _reconnectTimers[id] = cts;
+        Task.Delay(delay, cts.Token).ContinueWith(t =>
+        {
+            if (t.IsCanceled) return;
+            Application.Current?.Dispatcher.Invoke(() =>
+            {
+                if (!_pendingReconnect.Contains(id)) return;
+                if (!_reconnectConfigs.TryGetValue(id, out var cfg)) return;
+                _retryCounts[id] = count + 1;
+                Connect(cfg);
+            });
+        });
+    }
+
+    private void ReconnectPending()
+    {
+        foreach (var id in _pendingReconnect.ToList())
+        {
+            _retryCounts[id] = 0;
+            ScheduleReconnect(id);
+        }
+    }
+
+    private void CancelReconnectTimer(Guid id)
+    {
+        if (_reconnectTimers.TryGetValue(id, out var cts))
+        {
+            cts.Cancel();
+            _reconnectTimers.Remove(id);
+        }
+    }
+
+    public void CancelReconnect(Guid configId)
+    {
+        _pendingReconnect.Remove(configId);
+        CancelReconnectTimer(configId);
+        _retryCounts.Remove(configId);
+        _reconnectConfigs.Remove(configId);
     }
 
     private List<string> BuildArguments(SSHTunnelConfig config)

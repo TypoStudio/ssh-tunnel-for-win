@@ -46,6 +46,9 @@
   <data name="AutoConnectOnLaunch" xml:space="preserve">
     <value>실행 시 자동 연결</value>
   </data>
+  <data name="AutoReconnectOnDisconnect" xml:space="preserve">
+    <value>연결 끊김 시 자동 재연결</value>
+  </data>
   <data name="BrowseBtn" xml:space="preserve">
     <value>찾아보기...</value>
   </data>

@@ -132,6 +132,9 @@ public class SSHTunnelConfig
     [JsonPropertyName("disconnectOnQuit")]
     public bool DisconnectOnQuit { get; set; } = true;
 
+    [JsonPropertyName("autoReconnect")]
+    public bool AutoReconnect { get; set; } = true;
+
     [JsonPropertyName("additionalArgs")]
     public string AdditionalArgs { get; set; } = "";
 
@@ -147,6 +150,7 @@ public class SSHTunnelConfig
         Tunnels = Tunnels.ConvertAll(t => t.Clone()),
         AutoConnect = AutoConnect,
         DisconnectOnQuit = DisconnectOnQuit,
+        AutoReconnect = AutoReconnect,
         AdditionalArgs = AdditionalArgs
     };
 }

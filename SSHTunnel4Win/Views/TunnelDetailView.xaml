@@ -142,7 +142,8 @@
                 <GroupBox Header="{x:Static res:Strings.Options}" Margin="0,0,0,12">
                     <StackPanel Margin="8">
                         <CheckBox Content="{x:Static res:Strings.AutoConnectOnLaunch}" IsChecked="{Binding AutoConnect}" Margin="0,0,0,4"/>
-                        <CheckBox Content="{x:Static res:Strings.DisconnectOnQuit}" IsChecked="{Binding DisconnectOnQuit}" Margin="0,0,0,8"/>
+                        <CheckBox Content="{x:Static res:Strings.DisconnectOnQuit}" IsChecked="{Binding DisconnectOnQuit}" Margin="0,0,0,4"/>
+                        <CheckBox Content="{x:Static res:Strings.AutoReconnectOnDisconnect}" IsChecked="{Binding AutoReconnect}" Margin="0,0,0,8"/>
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Left" Text="{x:Static res:Strings.AdditionalSSHArguments}"
                                        VerticalAlignment="Center" Margin="0,0,8,0"/>

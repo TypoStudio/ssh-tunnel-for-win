@@ -32,6 +32,7 @@ public static class Strings
     public static string Apply => ResourceManager.GetString("Apply") ?? "";
     public static string Authentication => ResourceManager.GetString("Authentication") ?? "";
     public static string AutoConnectOnLaunch => ResourceManager.GetString("AutoConnectOnLaunch") ?? "";
+    public static string AutoReconnectOnDisconnect => ResourceManager.GetString("AutoReconnectOnDisconnect") ?? "";
     public static string BrowseBtn => ResourceManager.GetString("BrowseBtn") ?? "";
     public static string BuyMeACoffee => ResourceManager.GetString("BuyMeACoffee") ?? "";
     public static string Cancel => ResourceManager.GetString("Cancel") ?? "";
