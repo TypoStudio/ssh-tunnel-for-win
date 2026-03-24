@@ -39,4 +39,7 @@ public class TunnelStatus
             _errorMessages.Remove(id);
         StateChanged?.Invoke(id);
     }
+
+    public bool HasAnyConnection() =>
+        _states.ContainsValue(ConnectionState.Connected);
 }

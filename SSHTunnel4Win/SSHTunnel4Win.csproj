@@ -4,11 +4,12 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationIcon Condition="Exists('Assets\app-icon.ico')">Assets\app-icon.ico</ApplicationIcon>
-    <Version>1.1.1</Version>
+    <Version>1.1.2</Version>
     <AssemblyTitle>SSH Tunnel Manager</AssemblyTitle>
     <Company>TypoStudio</Company>
     <Product>SSH Tunnel Manager</Product>
     <Nullable>enable</Nullable>
+    <SatelliteResourceLanguages>en;ko</SatelliteResourceLanguages>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +22,7 @@
   <ItemGroup>
     <Resource Include="Assets\app-icon.ico" Condition="Exists('Assets\app-icon.ico')" />
     <Resource Include="Assets\tray-icon.ico" Condition="Exists('Assets\tray-icon.ico')" />
+    <Resource Include="Assets\tray-icon-connected.ico" Condition="Exists('Assets\tray-icon-connected.ico')" />
   </ItemGroup>
 
   <ItemGroup>

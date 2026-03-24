@@ -106,25 +106,29 @@ public partial class App : Application
             ToolTipText = "SSH Tunnel Manager"
         };
 
-        // Set icon from resource
-        var iconUri = new Uri("pack://application:,,,/Assets/tray-icon.ico", UriKind.Absolute);
-        try
-        {
-            var iconStream = GetResourceStream(iconUri)?.Stream;
-            if (iconStream != null)
-                _trayIcon.Icon = new System.Drawing.Icon(iconStream);
-        }
-        catch
-        {
-            // Fallback: will show no icon, but app still works
-        }
+        UpdateTrayIcon();
 
         _trayIcon.TrayMouseDoubleClick += (_, _) => ShowMainWindow();
 
         // Build context menu
         RebuildTrayMenu();
         _vm.ConfigStore.ConfigsChanged += RebuildTrayMenu;
-        _vm.Status.StateChanged += _ => Dispatcher.Invoke(RebuildTrayMenu);
+        _vm.Status.StateChanged += _ => Dispatcher.Invoke(() => { RebuildTrayMenu(); UpdateTrayIcon(); });
+    }
+
+    private void UpdateTrayIcon()
+    {
+        if (_trayIcon == null) return;
+        var hasConnection = _vm.Status.HasAnyConnection();
+        var icoPath = hasConnection ? "Assets/tray-icon-connected.ico" : "Assets/tray-icon.ico";
+        var iconUri = new Uri($"pack://application:,,,/{icoPath}", UriKind.Absolute);
+        try
+        {
+            var iconStream = GetResourceStream(iconUri)?.Stream;
+            if (iconStream != null)
+                _trayIcon.Icon = new System.Drawing.Icon(iconStream);
+        }
+        catch { }
     }
 
     private void RebuildTrayMenu()
