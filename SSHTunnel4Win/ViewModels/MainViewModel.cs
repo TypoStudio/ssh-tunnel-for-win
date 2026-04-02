@@ -117,7 +117,27 @@ public partial class MainViewModel : ObservableObject
     private void CopyShareString(SSHTunnelConfig config)
     {
         var encoded = ShareService.Encode(config);
-        Clipboard.SetText(encoded);
+        var ok = TryCopyToClipboard(encoded);
+        MessageBox.Show(
+            ok ? Strings.Copied : Strings.CopyFailed,
+            Strings.SSHTunnelManager,
+            MessageBoxButton.OK,
+            ok ? MessageBoxImage.Information : MessageBoxImage.Warning);
+    }
+
+    private static bool TryCopyToClipboard(string text)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            try
+            {
+                Clipboard.SetText(text);
+                if (Clipboard.GetText() == text) return true;
+            }
+            catch (System.Runtime.InteropServices.ExternalException) { }
+            System.Threading.Thread.Sleep(50);
+        }
+        return false;
     }
 
     [RelayCommand]

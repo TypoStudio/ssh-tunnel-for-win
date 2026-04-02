@@ -50,6 +50,7 @@ public static class Strings
     public static string Connection => ResourceManager.GetString("Connection") ?? "";
     public static string ConnectionLog => ResourceManager.GetString("ConnectionLog") ?? "";
     public static string Copied => ResourceManager.GetString("Copied") ?? "";
+    public static string CopyFailed => ResourceManager.GetString("CopyFailed") ?? "";
     public static string CopyCLICommand => ResourceManager.GetString("CopyCLICommand") ?? "";
     public static string CopyLog => ResourceManager.GetString("CopyLog") ?? "";
     public static string CopyShareString => ResourceManager.GetString("CopyShareString") ?? "";

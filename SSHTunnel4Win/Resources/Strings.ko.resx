@@ -100,6 +100,9 @@
   <data name="Copied" xml:space="preserve">
     <value>복사됨!</value>
   </data>
+  <data name="CopyFailed" xml:space="preserve">
+    <value>복사 실패!</value>
+  </data>
   <data name="CopyCLICommand" xml:space="preserve">
     <value>CLI 명령 복사</value>
   </data>
