@@ -26,6 +26,7 @@ public class SSHProcessManager
     private readonly Dictionary<Guid, SSHTunnelConfig> _reconnectConfigs = new();
     private readonly Dictionary<Guid, CancellationTokenSource> _reconnectTimers = new();
     private readonly Dictionary<Guid, int> _retryCounts = new();
+    private readonly Dictionary<Guid, SSHTunnelConfig> _pendingImmediateReconnect = new();
     private bool _isNetworkAvailable = true;
 
     public Dictionary<Guid, string> Logs { get; } = new();
@@ -178,6 +179,8 @@ public class SSHProcessManager
                     }
                 }
                 _manualDisconnects.Remove(id);
+                if (_pendingImmediateReconnect.Remove(id, out var reconnectCfg))
+                    Connect(reconnectCfg);
             });
         };
 
@@ -250,6 +253,27 @@ public class SSHProcessManager
     {
         foreach (var config in configs.Where(c => c.DisconnectOnQuit))
             Disconnect(config.Id);
+    }
+
+    public void Reconnect(SSHTunnelConfig config)
+    {
+        var id = config.Id;
+        if (!_status.GetState(id).IsActive())
+        {
+            Connect(config);
+            return;
+        }
+        _pendingImmediateReconnect[id] = config;
+        Disconnect(id);
+    }
+
+    public void ReconnectAll()
+    {
+        foreach (var (id, config) in _reconnectConfigs.ToList())
+        {
+            if (_status.GetState(id).IsActive())
+                Reconnect(config);
+        }
     }
 
     // Auto-reconnect helpers

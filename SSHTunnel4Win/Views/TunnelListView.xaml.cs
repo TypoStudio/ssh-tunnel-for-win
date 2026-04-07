@@ -22,6 +22,7 @@ public class TunnelListItem : INotifyPropertyChanged
     public bool HasTunnels => Config.Tunnels.Count > 0;
     public ConnectionState State => _status.GetState(Config.Id);
     public string ConnectLabel => State.IsActive() ? Strings.Disconnect : Strings.Connect;
+    public bool IsActive => State.IsActive();
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -35,6 +36,7 @@ public class TunnelListItem : INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(State)));
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ConnectLabel)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsActive)));
     }
 }
 
@@ -85,6 +87,12 @@ public partial class TunnelListView : UserControl
     {
         if (GetContextConfig(sender) is { } config)
             _vm.ProcessManager.Toggle(config);
+    }
+
+    private void ReconnectTunnel(object sender, RoutedEventArgs e)
+    {
+        if (GetContextConfig(sender) is { } config)
+            _vm.ProcessManager.Reconnect(config);
     }
 
     private void CopyShareString(object sender, RoutedEventArgs e)

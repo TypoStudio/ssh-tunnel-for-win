@@ -5,6 +5,7 @@
              xmlns:conv="clr-namespace:SSHTunnel4Win.Converters">
     <UserControl.Resources>
         <conv:ConnectionStateToColorConverter x:Key="StateToColor"/>
+        <conv:BoolToVisibilityConverter x:Key="BoolToVis"/>
     </UserControl.Resources>
 
     <Grid>
@@ -41,6 +42,8 @@
                         <Grid.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="{Binding ConnectLabel}" Click="ToggleConnect"/>
+                                <MenuItem Header="{x:Static res:Strings.Reconnect}" Click="ReconnectTunnel"
+                                          Visibility="{Binding IsActive, Converter={StaticResource BoolToVis}}"/>
                                 <Separator/>
                                 <MenuItem Header="{x:Static res:Strings.CopyShareString}" Click="CopyShareString"/>
                                 <Separator/>

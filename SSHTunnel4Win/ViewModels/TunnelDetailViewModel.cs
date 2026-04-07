@@ -48,11 +48,14 @@ public partial class TunnelDetailViewModel : ObservableObject
         LoadConfig();
     }
 
+    public bool IsActive => State.IsActive();
+
     private void OnStatusChanged(Guid id)
     {
         if (id != _configId) return;
         State = _status.GetState(id);
         ErrorMessage = _status.GetErrorMessage(id);
+        OnPropertyChanged(nameof(IsActive));
     }
 
     private void LoadConfig()
@@ -127,6 +130,13 @@ public partial class TunnelDetailViewModel : ObservableObject
             CredentialService.DeletePassword(_configId);
         else
             CredentialService.SavePassword(value, _configId);
+    }
+
+    [RelayCommand]
+    private void Reconnect()
+    {
+        var config = BuildConfig();
+        _processManager.Reconnect(config);
     }
 
     [RelayCommand]

@@ -22,6 +22,11 @@
                     <TextBlock Text="&#xE8A1;" FontFamily="Segoe MDL2 Assets" FontSize="14"/>
                 </Button>
                 <Separator/>
+                <Button Command="{Binding ReconnectCommand}"
+                        ToolTip="{x:Static res:Strings.Reconnect}"
+                        Visibility="{Binding IsActive, Converter={StaticResource BoolToVis}}">
+                    <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="14"/>
+                </Button>
                 <Button Command="{Binding ToggleConnectCommand}">
                     <StackPanel Orientation="Horizontal">
                         <Ellipse Width="8" Height="8"

@@ -131,6 +131,8 @@ public static class Strings
     public static string ProxyJump => ResourceManager.GetString("ProxyJump") ?? "";
     public static string Quit => ResourceManager.GetString("Quit") ?? "";
     public static string Refresh => ResourceManager.GetString("Refresh") ?? "";
+    public static string Reconnect => ResourceManager.GetString("Reconnect") ?? "";
+    public static string ReconnectAll => ResourceManager.GetString("ReconnectAll") ?? "";
     public static string Reload => ResourceManager.GetString("Reload") ?? "";
     public static string RemoteHost => ResourceManager.GetString("RemoteHost") ?? "";
     public static string RemotePort => ResourceManager.GetString("RemotePort") ?? "";

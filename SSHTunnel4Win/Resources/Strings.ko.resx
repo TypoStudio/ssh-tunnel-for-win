@@ -343,6 +343,12 @@
   <data name="Refresh" xml:space="preserve">
     <value>새로 고침</value>
   </data>
+  <data name="Reconnect" xml:space="preserve">
+    <value>재연결</value>
+  </data>
+  <data name="ReconnectAll" xml:space="preserve">
+    <value>모두 재연결</value>
+  </data>
   <data name="Reload" xml:space="preserve">
     <value>새로 고침</value>
   </data>

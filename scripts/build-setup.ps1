@@ -34,9 +34,10 @@ Write-Host "Using Inno Setup: $iscc" -ForegroundColor Gray
 # 1. dotnet publish
 Write-Host "`n[1/2] Publishing app..." -ForegroundColor Cyan
 if (Test-Path $PublishDir) { Remove-Item $PublishDir -Recurse -Force }
-dotnet publish "$ProjectDir\SSHTunnel4Win.csproj" -c $Configuration -r win-x64 --self-contained true -o $PublishDir
+$LogFile = Join-Path $PSScriptRoot "build-log.txt"
+dotnet publish "$ProjectDir\SSHTunnel4Win.csproj" -c $Configuration -r win-x64 --self-contained true -o $PublishDir 2>&1 | Tee-Object $LogFile
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "Publish failed." -ForegroundColor Red
+    Write-Host "Publish failed. Log: $LogFile" -ForegroundColor Red
     exit 1
 }
 

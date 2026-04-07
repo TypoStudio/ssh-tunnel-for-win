@@ -156,6 +156,12 @@ public partial class App : Application
 
         menu.Items.Add(new System.Windows.Controls.Separator());
 
+        // Reconnect All
+        var reconnectAllItem = new System.Windows.Controls.MenuItem { Header = Strings.ReconnectAll };
+        reconnectAllItem.IsEnabled = _vm.ConfigStore.Configs.Any(c => _vm.Status.GetState(c.Id).IsActive());
+        reconnectAllItem.Click += (_, _) => _vm.ProcessManager.ReconnectAll();
+        menu.Items.Add(reconnectAllItem);
+
         // Disconnect All
         var disconnectItem = new System.Windows.Controls.MenuItem { Header = Strings.DisconnectAll };
         disconnectItem.Click += (_, _) => _vm.ProcessManager.DisconnectAll();
