@@ -9,7 +9,7 @@
     <Company>TypoStudio</Company>
     <Product>SSH Tunnel Manager</Product>
     <Nullable>enable</Nullable>
-    <SatelliteResourceLanguages>en;ko</SatelliteResourceLanguages>
+    <SatelliteResourceLanguages>en;ko;zh</SatelliteResourceLanguages>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,6 +28,9 @@
   <ItemGroup>
     <EmbeddedResource Update="Resources\Strings.resx" />
     <EmbeddedResource Update="Resources\Strings.ko.resx">
+      <DependentUpon>Strings.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Strings.zh.resx">
       <DependentUpon>Strings.resx</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
