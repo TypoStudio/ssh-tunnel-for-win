@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msOccurs="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <data name="About" xml:space="preserve"><value>关于</value></data>
+  <data name="AddDirective" xml:space="preserve"><value>添加条目</value></data>
+  <data name="AddHost" xml:space="preserve"><value>添加主机</value></data>
+  <data name="AddRule" xml:space="preserve"><value>添加规则</value></data>
+  <data name="AddTunnel" xml:space="preserve"><value>添加隧道</value></data>
+  <data name="AddTunnelHint" xml:space="preserve"><value>按 + 添加新隧道，或按 Ctrl+V 粘贴分享链接。</value></data>
+  <data name="AdditionalSSHArguments" xml:space="preserve"><value>附加 SSH 参数</value></data>
+  <data name="Apply" xml:space="preserve"><value>应用</value></data>
+  <data name="Authentication" xml:space="preserve"><value>认证</value></data>
+  <data name="AutoConnectOnLaunch" xml:space="preserve"><value>启动时自动连接</value></data>
+  <data name="AutoReconnectOnDisconnect" xml:space="preserve"><value>断开时自动重连</value></data>
+  <data name="BrowseBtn" xml:space="preserve"><value>浏览...</value></data>
+  <data name="BuyMeACoffee" xml:space="preserve"><value>请我喝咖啡</value></data>
+  <data name="Cancel" xml:space="preserve"><value>取消</value></data>
+  <data name="CheckForUpdates" xml:space="preserve"><value>检查更新...</value></data>
+  <data name="CheckForUpdatesAutomatically" xml:space="preserve"><value>自动检查更新</value></data>
+  <data name="CheckNow" xml:space="preserve"><value>立即检查</value></data>
+  <data name="Checking" xml:space="preserve"><value>检查中...</value></data>
+  <data name="ClearLog" xml:space="preserve"><value>清空日志</value></data>
+  <data name="Close" xml:space="preserve"><value>关闭</value></data>
+  <data name="Command" xml:space="preserve"><value>命令</value></data>
+  <data name="Connect" xml:space="preserve"><value>连接</value></data>
+  <data name="ConnectAnyway" xml:space="preserve"><value>仍然连接</value></data>
+  <data name="Connected" xml:space="preserve"><value>已连接</value></data>
+  <data name="Connecting" xml:space="preserve"><value>连接中...</value></data>
+  <data name="Connection" xml:space="preserve"><value>连接</value></data>
+  <data name="ConnectionLog" xml:space="preserve"><value>连接日志</value></data>
+  <data name="Copied" xml:space="preserve"><value>已复制!</value></data>
+  <data name="CopyFailed" xml:space="preserve"><value>复制失败!</value></data>
+  <data name="CopyCLICommand" xml:space="preserve"><value>复制 CLI 命令</value></data>
+  <data name="CopyLog" xml:space="preserve"><value>复制日志</value></data>
+  <data name="CopyShareString" xml:space="preserve"><value>复制分享链接</value></data>
+  <data name="Delete" xml:space="preserve"><value>删除</value></data>
+  <data name="Disconnect" xml:space="preserve"><value>断开</value></data>
+  <data name="DisconnectAll" xml:space="preserve"><value>全部断开</value></data>
+  <data name="DisconnectOnQuit" xml:space="preserve"><value>退出时断开</value></data>
+  <data name="Disconnected" xml:space="preserve"><value>已断开</value></data>
+  <data name="Download" xml:space="preserve"><value>下载</value></data>
+  <data name="DownloadManually" xml:space="preserve"><value>手动下载</value></data>
+  <data name="EditAsText" xml:space="preserve"><value>文本编辑</value></data>
+  <data name="EnableDisable" xml:space="preserve"><value>启用/禁用</value></data>
+  <data name="Error" xml:space="preserve"><value>错误</value></data>
+  <data name="File" xml:space="preserve"><value>文件</value></data>
+  <data name="ForwardAgent" xml:space="preserve"><value>转发代理</value></data>
+  <data name="General" xml:space="preserve"><value>常规</value></data>
+  <data name="GitHub" xml:space="preserve"><value>GitHub</value></data>
+  <data name="Help" xml:space="preserve"><value>帮助</value></data>
+  <data name="HelpAuthentication" xml:space="preserve"><value>认证</value></data>
+  <data name="HelpAuthDesc" xml:space="preserve"><value>使用 SSH 密钥文件（私钥）或密码认证。密码安全存储。</value></data>
+  <data name="HelpDynamicDesc" xml:space="preserve"><value>动态 (-D): 在本地端口创建 SOCKS 代理。</value></data>
+  <data name="HelpKeyboardShortcuts" xml:space="preserve"><value>快捷键</value></data>
+  <data name="HelpKeyboardShortcutsDesc" xml:space="preserve"><value>Ctrl+I: 导入, Ctrl+V: 粘贴分享链接, Ctrl+Q: 退出, Esc: 关闭对话框</value></data>
+  <data name="HelpLocalDesc" xml:space="preserve"><value>本地 (-L): 通过 SSH 服务器将本地端口转发到远程目标。</value></data>
+  <data name="HelpMenuBar" xml:space="preserve"><value>系统托盘</value></data>
+  <data name="HelpMenuBarDesc" xml:space="preserve"><value>通过系统托盘图标快速访问所有隧道。双击打开管理器。</value></data>
+  <data name="HelpRemoteDesc" xml:space="preserve"><value>远程 (-R): 将 SSH 服务器的远程端口转发到本地目标。</value></data>
+  <data name="HelpSSHConfig" xml:space="preserve"><value>SSH 配置</value></data>
+  <data name="HelpSSHConfigDesc" xml:space="preserve"><value>浏览和编辑 ~/.ssh/config 及 ~/.ssh/config.d/ 中的 SSH 配置条目。</value></data>
+  <data name="HelpShareImport" xml:space="preserve"><value>分享与导入</value></data>
+  <data name="HelpShareImportDesc" xml:space="preserve"><value>通过 sshtunnel:// URL 分享隧道配置。使用 Ctrl+V 粘贴或导入按钮导入。</value></data>
+  <data name="HelpTunnelManagement" xml:space="preserve"><value>隧道管理</value></data>
+  <data name="HelpTunnelManagementDesc" xml:space="preserve"><value>创建本地、远程或动态端口转发的 SSH 隧道。每个隧道可包含多个转发规则。</value></data>
+  <data name="HelpTunnelTypes" xml:space="preserve"><value>隧道类型</value></data>
+  <data name="Host" xml:space="preserve"><value>主机</value></data>
+  <data name="HostName" xml:space="preserve"><value>主机名</value></data>
+  <data name="IdentityFile" xml:space="preserve"><value>密钥文件</value></data>
+  <data name="Import" xml:space="preserve"><value>导入</value></data>
+  <data name="ImportFromShareString" xml:space="preserve"><value>从分享链接导入</value></data>
+  <data name="ImportTunnelConfiguration" xml:space="preserve"><value>导入隧道配置？</value></data>
+  <data name="InstallAndRestart" xml:space="preserve"><value>安装并重启</value></data>
+  <data name="Key" xml:space="preserve"><value>键</value></data>
+  <data name="KillAll" xml:space="preserve"><value>全部终止</value></data>
+  <data name="KillProcess" xml:space="preserve"><value>终止</value></data>
+  <data name="Later" xml:space="preserve"><value>稍后</value></data>
+  <data name="LaunchAtLogin" xml:space="preserve"><value>登录时启动</value></data>
+  <data name="LoadFromSSHConfig" xml:space="preserve"><value>从 SSH Config 加载</value></data>
+  <data name="LocalPort" xml:space="preserve"><value>本地端口</value></data>
+  <data name="Method" xml:space="preserve"><value>方式</value></data>
+  <data name="MoveDown" xml:space="preserve"><value>下移</value></data>
+  <data name="MoveUp" xml:space="preserve"><value>上移</value></data>
+  <data name="Name" xml:space="preserve"><value>名称</value></data>
+  <data name="NewTunnel" xml:space="preserve"><value>新建隧道</value></data>
+  <data name="NewVersionAvailable" xml:space="preserve"><value>有新版本 {0} 可用。</value></data>
+  <data name="NoHostSelected" xml:space="preserve"><value>未选择主机</value></data>
+  <data name="NoHostsInConfig" xml:space="preserve"><value>~/.ssh/config 中未找到主机</value></data>
+  <data name="NoLogAvailable" xml:space="preserve"><value>无可用日志。</value></data>
+  <data name="NoProcesses" xml:space="preserve"><value>未找到运行中的 SSH 隧道进程。</value></data>
+  <data name="NoSSHConfigFound" xml:space="preserve"><value>未找到 SSH Config</value></data>
+  <data name="NoTunnelSelected" xml:space="preserve"><value>未选择隧道</value></data>
+  <data name="NoTunnels" xml:space="preserve"><value>无隧道</value></data>
+  <data name="OK" xml:space="preserve"><value>确定</value></data>
+  <data name="OpenInEditor" xml:space="preserve"><value>用编辑器打开</value></data>
+  <data name="OpenInExternalEditor" xml:space="preserve"><value>用外部编辑器打开</value></data>
+  <data name="OpenManager" xml:space="preserve"><value>打开管理器</value></data>
+  <data name="OpenManagerOnLaunch" xml:space="preserve"><value>启动时打开管理器</value></data>
+  <data name="Options" xml:space="preserve"><value>选项</value></data>
+  <data name="OtherDirectives" xml:space="preserve"><value>其他指令</value></data>
+  <data name="PID" xml:space="preserve"><value>PID</value></data>
+  <data name="Password" xml:space="preserve"><value>密码</value></data>
+  <data name="Port" xml:space="preserve"><value>端口</value></data>
+  <data name="PortConflict" xml:space="preserve"><value>端口冲突</value></data>
+  <data name="PortConflictMessage" xml:space="preserve"><value>端口 {0} 已被占用，连接可能失败。</value></data>
+  <data name="PortForwarding" xml:space="preserve"><value>端口转发</value></data>
+  <data name="Preview" xml:space="preserve"><value>预览</value></data>
+  <data name="Processes" xml:space="preserve"><value>进程</value></data>
+  <data name="Proxy" xml:space="preserve"><value>代理</value></data>
+  <data name="ProxyCommand" xml:space="preserve"><value>代理命令</value></data>
+  <data name="ProxyJump" xml:space="preserve"><value>跳板代理</value></data>
+  <data name="Quit" xml:space="preserve"><value>退出</value></data>
+  <data name="RawText" xml:space="preserve"><value>原始文本</value></data>
+  <data name="Reconnect" xml:space="preserve"><value>重连</value></data>
+  <data name="ReconnectAll" xml:space="preserve"><value>全部重连</value></data>
+  <data name="Refresh" xml:space="preserve"><value>刷新</value></data>
+  <data name="Reload" xml:space="preserve"><value>重新加载</value></data>
+  <data name="RemoteHost" xml:space="preserve"><value>远程主机</value></data>
+  <data name="RemotePort" xml:space="preserve"><value>远程端口</value></data>
+  <data name="Remove" xml:space="preserve"><value>移除</value></data>
+  <data name="RunningSSHProcesses" xml:space="preserve"><value>运行中的 SSH 进程</value></data>
+  <data name="SSHConfig" xml:space="preserve"><value>SSH 配置</value></data>
+  <data name="SSHConfigLoaded" xml:space="preserve"><value>SSH Config 已加载</value></data>
+  <data name="SSHTunnelManager" xml:space="preserve"><value>SSH 隧道管理器</value></data>
+  <data name="Save" xml:space="preserve"><value>保存</value></data>
+  <data name="Search" xml:space="preserve"><value>搜索</value></data>
+  <data name="SelectHostHint" xml:space="preserve"><value>从侧边栏选择主机或添加新主机。</value></data>
+  <data name="SelectTunnelHint" xml:space="preserve"><value>从侧边栏选择隧道或添加新隧道。</value></data>
+  <data name="ServerAliveCountMax" xml:space="preserve"><value>最大保活次数</value></data>
+  <data name="ServerAliveInterval" xml:space="preserve"><value>保活间隔</value></data>
+  <data name="Settings" xml:space="preserve"><value>设置</value></data>
+  <data name="Share" xml:space="preserve"><value>分享</value></data>
+  <data name="TunnelConfig" xml:space="preserve"><value>隧道配置</value></data>
+  <data name="TunnelRules" xml:space="preserve"><value>条规则</value></data>
+  <data name="Tunnels" xml:space="preserve"><value>隧道</value></data>
+  <data name="TunnelTypeDynamic" xml:space="preserve"><value>动态 (-D)</value></data>
+  <data name="TunnelTypeLocal" xml:space="preserve"><value>本地 (-L)</value></data>
+  <data name="TunnelTypeRemote" xml:space="preserve"><value>远程 (-R)</value></data>
+  <data name="Type" xml:space="preserve"><value>类型</value></data>
+  <data name="UpToDate" xml:space="preserve"><value>已是最新版本。</value></data>
+  <data name="UpdateAvailable" xml:space="preserve"><value>有可用更新</value></data>
+  <data name="UpdateFailed" xml:space="preserve"><value>更新失败</value></data>
+  <data name="User" xml:space="preserve"><value>用户</value></data>
+  <data name="Username" xml:space="preserve"><value>用户名</value></data>
+  <data name="Value" xml:space="preserve"><value>值</value></data>
+  <data name="Version" xml:space="preserve"><value>版本</value></data>
+  <data name="VersionAvailable" xml:space="preserve"><value>v{0} 可用</value></data>
+</root>
