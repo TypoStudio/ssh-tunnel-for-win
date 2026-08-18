@@ -17,8 +17,11 @@
     </xsd:element>
   </xsd:schema>
   <data name="About" xml:space="preserve"><value>关于</value></data>
+  <data name="Add" xml:space="preserve"><value>添加</value></data>
   <data name="AddDirective" xml:space="preserve"><value>添加条目</value></data>
+  <data name="AddFromCLI" xml:space="preserve"><value>从 CLI 添加</value></data>
   <data name="AddHost" xml:space="preserve"><value>添加主机</value></data>
+  <data name="AddPortForwardingFromCLI" xml:space="preserve"><value>从 CLI 添加端口转发</value></data>
   <data name="AddRule" xml:space="preserve"><value>添加规则</value></data>
   <data name="AddTunnel" xml:space="preserve"><value>添加隧道</value></data>
   <data name="AddTunnelHint" xml:space="preserve"><value>按 + 添加新隧道，或按 Ctrl+V 粘贴分享链接。</value></data>
@@ -114,6 +117,8 @@
   <data name="Options" xml:space="preserve"><value>选项</value></data>
   <data name="OtherDirectives" xml:space="preserve"><value>其他指令</value></data>
   <data name="PID" xml:space="preserve"><value>PID</value></data>
+  <data name="PasteShareStringOrCommand" xml:space="preserve"><value>在下方粘贴分享字符串或 ssh 命令：</value></data>
+  <data name="PasteForwardingOptionsHint" xml:space="preserve"><value>粘贴 ssh 转发选项，例如：-L 8080:localhost:80 -D 1080</value></data>
   <data name="Password" xml:space="preserve"><value>密码</value></data>
   <data name="Port" xml:space="preserve"><value>端口</value></data>
   <data name="PortConflict" xml:space="preserve"><value>端口冲突</value></data>
