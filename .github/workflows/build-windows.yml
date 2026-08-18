@@ -1,0 +1,54 @@
+name: Build Windows Setup
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install Inno Setup
+        run: choco install innosetup --no-progress -y
+
+      - name: Read version
+        id: version
+        shell: pwsh
+        run: |
+          $version = (Select-Xml -Path SSHTunnel4Win/SSHTunnel4Win.csproj -XPath //Version).Node.InnerText
+          "version=$version" >> $env:GITHUB_OUTPUT
+
+      - name: Build installer
+        run: powershell -ExecutionPolicy Bypass -File scripts/build-setup.ps1
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SSHTunnel4Win-${{ steps.version.outputs.version }}-setup
+          path: scripts/SSHTunnel4Win-${{ steps.version.outputs.version }}-setup.exe
+
+      - name: Attach installer to release
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = "${{ github.ref_name }}"
+          gh release view $tag 2>$null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $tag --title $tag --generate-notes
+          }
+          gh release upload $tag "scripts/SSHTunnel4Win-${{ steps.version.outputs.version }}-setup.exe" --clobber
