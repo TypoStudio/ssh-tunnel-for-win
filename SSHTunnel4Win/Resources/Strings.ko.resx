@@ -19,11 +19,20 @@
   <data name="About" xml:space="preserve">
     <value>정보</value>
   </data>
+  <data name="Add" xml:space="preserve">
+    <value>추가</value>
+  </data>
   <data name="AddDirective" xml:space="preserve">
     <value>항목 추가</value>
   </data>
+  <data name="AddFromCLI" xml:space="preserve">
+    <value>CLI에서 추가</value>
+  </data>
   <data name="AddHost" xml:space="preserve">
     <value>호스트 추가</value>
+  </data>
+  <data name="AddPortForwardingFromCLI" xml:space="preserve">
+    <value>CLI에서 포트 포워딩 추가</value>
   </data>
   <data name="AddRule" xml:space="preserve">
     <value>규칙 추가</value>
@@ -309,6 +318,12 @@
   </data>
   <data name="PID" xml:space="preserve">
     <value>PID</value>
+  </data>
+  <data name="PasteShareStringOrCommand" xml:space="preserve">
+    <value>아래에 공유 문자열 또는 ssh 명령을 붙여넣으세요:</value>
+  </data>
+  <data name="PasteForwardingOptionsHint" xml:space="preserve">
+    <value>ssh 포워딩 옵션을 붙여넣으세요. 예: -L 8080:localhost:80 -D 1080</value>
   </data>
   <data name="Password" xml:space="preserve">
     <value>비밀번호</value>

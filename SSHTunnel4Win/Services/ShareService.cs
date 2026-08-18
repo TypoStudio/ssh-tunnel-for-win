@@ -74,7 +74,8 @@ public static class ShareService
             .Select(l => l.Trim())
             .Where(l => !string.IsNullOrEmpty(l))
             .ToList();
-        if (lines.Count == 0 || !lines[0].StartsWith("sshtunnel://")) return null;
+        // Not a share string: parse it as an ssh command line instead.
+        if (lines.Count == 0 || !lines[0].StartsWith("sshtunnel://")) return ParseCLI(raw);
 
         var header = lines[0];
         var uri = header["sshtunnel://".Length..];
@@ -167,5 +168,271 @@ public static class ShareService
         {
             return null;
         }
+    }
+
+    // CLI parsing
+
+    /// <summary>Options that take a separate value which is preserved verbatim in AdditionalArgs.</summary>
+    private static readonly HashSet<string> PassthroughValueOptions = new()
+    {
+        "-b", "-c", "-E", "-e", "-F", "-I", "-J", "-m", "-O", "-Q", "-S", "-W", "-w"
+    };
+
+    /// <summary>Parses an ssh command line (the format produced by BuildCLI) into a config.</summary>
+    public static SSHTunnelConfig? ParseCLI(string input)
+    {
+        var tokens = Tokenize(input);
+        if (tokens.Count > 0)
+        {
+            var first = tokens[0];
+            if (first == "ssh" || first.EndsWith("/ssh") || first.EndsWith("\\ssh")
+                || first.EndsWith("ssh.exe", StringComparison.OrdinalIgnoreCase))
+                tokens.RemoveAt(0);
+        }
+        if (tokens.Count == 0) return null;
+
+        var config = new SSHTunnelConfig();
+        var extra = new List<string>();
+        string? destination = null;
+        var index = 0;
+
+        while (index < tokens.Count)
+        {
+            var token = tokens[index];
+            index++;
+
+            if (!token.StartsWith("-") || token.Length < 2)
+            {
+                // First bare token is the destination; anything after it is a remote command.
+                if (destination == null && token.Length > 0) destination = token;
+                continue;
+            }
+
+            var flag = token[..2];
+            var inline = token[2..];
+
+            string? NextValue()
+            {
+                if (inline.Length > 0) return inline;
+                if (index >= tokens.Count) return null;
+                return tokens[index++];
+            }
+
+            switch (flag)
+            {
+                case "-p":
+                    var portValue = NextValue();
+                    if (portValue != null && ushort.TryParse(portValue, out var port)) config.Port = port;
+                    break;
+                case "-i":
+                    var identity = NextValue();
+                    if (identity != null)
+                    {
+                        config.AuthMethod = AuthMethod.IdentityFile;
+                        config.IdentityFile = identity;
+                    }
+                    break;
+                case "-l":
+                    var login = NextValue();
+                    if (login != null) config.Username = login;
+                    break;
+                case "-L":
+                case "-R":
+                case "-D":
+                    var forward = NextValue();
+                    var forwardType = ForwardType(flag);
+                    if (forward != null && forwardType != null)
+                    {
+                        var entry = ParseForwardArgument(forward, forwardType.Value);
+                        if (entry != null) config.Tunnels.Add(entry);
+                    }
+                    break;
+                case "-o":
+                    var option = NextValue();
+                    if (option != null)
+                    {
+                        if (option.StartsWith("PreferredAuthentications=") && option.Contains("password"))
+                            config.AuthMethod = AuthMethod.Password;
+                        else
+                            extra.AddRange(new[] { "-o", option });
+                    }
+                    break;
+                case "-N":
+                case "-v":
+                    break; // always applied when launching
+                default:
+                    if (PassthroughValueOptions.Contains(flag))
+                    {
+                        var value = NextValue();
+                        if (value != null) extra.AddRange(new[] { flag, value });
+                    }
+                    else
+                    {
+                        extra.Add(token);
+                    }
+                    break;
+            }
+        }
+
+        // A tunnel command without any forwarding rule is not a tunnel config.
+        if (destination == null || config.Tunnels.Count == 0) return null;
+
+        var target = destination;
+        if (target.StartsWith("ssh://")) target = target["ssh://".Length..];
+
+        var atIndex = target.LastIndexOf('@');
+        if (atIndex >= 0)
+        {
+            config.Username = target[..atIndex];
+            target = target[(atIndex + 1)..];
+        }
+
+        var hostComponents = target.Split(':');
+        if (hostComponents.Length == 2 && ushort.TryParse(hostComponents[1], out var hostPort))
+        {
+            config.Port = hostPort;
+            target = hostComponents[0];
+        }
+        if (target.Length == 0) return null;
+
+        config.Host = target;
+        config.Name = target;
+        config.AdditionalArgs = string.Join(" ", extra);
+        return config;
+    }
+
+    /// <summary>Parses forwarding rules out of CLI-style text. Accepts "-L 8080:localhost:80",
+    /// "-D1080", share lines like "L:8080:localhost:80", and a bare "8080:localhost:80"
+    /// (treated as local). Non-forwarding tokens are ignored.</summary>
+    public static List<TunnelEntry> ParseForwardingEntries(string input)
+    {
+        var tokens = Tokenize(input);
+        var entries = new List<TunnelEntry>();
+        var index = 0;
+
+        while (index < tokens.Count)
+        {
+            var token = tokens[index];
+            index++;
+
+            if (token.StartsWith("-"))
+            {
+                if (token.Length < 2) continue;
+                var type = ForwardType(token[..2]);
+                if (type == null) continue;
+
+                var value = token[2..];
+                if (value.Length == 0)
+                {
+                    if (index >= tokens.Count) break;
+                    value = tokens[index];
+                    index++;
+                }
+                var entry = ParseForwardArgument(value, type.Value);
+                if (entry != null) entries.Add(entry);
+            }
+            else
+            {
+                var entry = ParseTunnelLine(token) ?? ParseForwardArgument(token, TunnelType.Local);
+                if (entry != null) entries.Add(entry);
+            }
+        }
+        return entries;
+    }
+
+    private static TunnelType? ForwardType(string flag) => flag switch
+    {
+        "-L" => TunnelType.Local,
+        "-R" => TunnelType.Remote,
+        "-D" => TunnelType.Dynamic,
+        _ => null
+    };
+
+    /// <summary>Parses "[bind:]port:host:hostport" (-L/-R) or "[bind:]port" (-D).</summary>
+    private static TunnelEntry? ParseForwardArgument(string argument, TunnelType type)
+    {
+        var parts = argument.Split(':');
+        var entry = new TunnelEntry { Type = type };
+
+        if (type == TunnelType.Dynamic)
+        {
+            switch (parts.Length)
+            {
+                case 1:
+                    if (!ushort.TryParse(parts[0], out var dynamicPort)) return null;
+                    entry.LocalPort = dynamicPort;
+                    break;
+                case 2:
+                    if (!ushort.TryParse(parts[1], out var boundDynamicPort)) return null;
+                    entry.BindAddress = parts[0];
+                    entry.LocalPort = boundDynamicPort;
+                    break;
+                default:
+                    return null;
+            }
+            return entry;
+        }
+
+        switch (parts.Length)
+        {
+            case 3:
+                if (!ushort.TryParse(parts[0], out var localPort) || !ushort.TryParse(parts[2], out var remotePort))
+                    return null;
+                entry.LocalPort = localPort;
+                entry.RemoteHost = parts[1];
+                entry.RemotePort = remotePort;
+                break;
+            case 4:
+                if (!ushort.TryParse(parts[1], out var boundLocalPort) || !ushort.TryParse(parts[3], out var boundRemotePort))
+                    return null;
+                entry.BindAddress = parts[0];
+                entry.LocalPort = boundLocalPort;
+                entry.RemoteHost = parts[2];
+                entry.RemotePort = boundRemotePort;
+                break;
+            default:
+                return null;
+        }
+
+        return entry.RemoteHost.Length == 0 ? null : entry;
+    }
+
+    /// <summary>Splits a command line on whitespace, honoring quotes and line continuations.
+    /// Backslashes are literal so that Windows paths survive round-tripping.</summary>
+    private static List<string> Tokenize(string input)
+    {
+        var joined = input.Replace("\\\r\n", " ").Replace("\\\n", " ");
+        var tokens = new List<string>();
+        var current = new System.Text.StringBuilder();
+        var hasToken = false;
+        char? quote = null;
+
+        foreach (var character in joined)
+        {
+            if (quote != null)
+            {
+                if (character == quote) quote = null;
+                else current.Append(character);
+                hasToken = true;
+                continue;
+            }
+            if (character == '"' || character == '\'')
+            {
+                quote = character;
+                hasToken = true;
+                continue;
+            }
+            if (char.IsWhiteSpace(character))
+            {
+                if (hasToken) tokens.Add(current.ToString());
+                current.Clear();
+                hasToken = false;
+                continue;
+            }
+            current.Append(character);
+            hasToken = true;
+        }
+        if (hasToken) tokens.Add(current.ToString());
+        return tokens;
     }
 }

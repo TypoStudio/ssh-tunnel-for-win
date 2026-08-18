@@ -23,7 +23,7 @@ public partial class ImportDialog : Window
         if (Clipboard.ContainsText())
         {
             var text = Clipboard.GetText();
-            if (text.StartsWith("sshtunnel://"))
+            if (text.StartsWith("sshtunnel://") || text.StartsWith("ssh "))
             {
                 InputBox.Text = text;
             }

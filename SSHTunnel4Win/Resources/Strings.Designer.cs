@@ -23,8 +23,11 @@ public static class Strings
     }
 
     public static string About => ResourceManager.GetString("About") ?? "";
+    public static string Add => ResourceManager.GetString("Add") ?? "";
     public static string AddDirective => ResourceManager.GetString("AddDirective") ?? "";
+    public static string AddFromCLI => ResourceManager.GetString("AddFromCLI") ?? "";
     public static string AddHost => ResourceManager.GetString("AddHost") ?? "";
+    public static string AddPortForwardingFromCLI => ResourceManager.GetString("AddPortForwardingFromCLI") ?? "";
     public static string AddRule => ResourceManager.GetString("AddRule") ?? "";
     public static string AddTunnel => ResourceManager.GetString("AddTunnel") ?? "";
     public static string AddTunnelHint => ResourceManager.GetString("AddTunnelHint") ?? "";
@@ -120,6 +123,8 @@ public static class Strings
     public static string Options => ResourceManager.GetString("Options") ?? "";
     public static string OtherDirectives => ResourceManager.GetString("OtherDirectives") ?? "";
     public static string PID => ResourceManager.GetString("PID") ?? "";
+    public static string PasteShareStringOrCommand => ResourceManager.GetString("PasteShareStringOrCommand") ?? "";
+    public static string PasteForwardingOptionsHint => ResourceManager.GetString("PasteForwardingOptionsHint") ?? "";
     public static string Password => ResourceManager.GetString("Password") ?? "";
     public static string Port => ResourceManager.GetString("Port") ?? "";
     public static string PortConflict => ResourceManager.GetString("PortConflict") ?? "";

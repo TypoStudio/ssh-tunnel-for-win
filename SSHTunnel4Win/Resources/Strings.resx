@@ -19,11 +19,20 @@
   <data name="About" xml:space="preserve">
     <value>About</value>
   </data>
+  <data name="Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
   <data name="AddDirective" xml:space="preserve">
     <value>Add Directive</value>
   </data>
+  <data name="AddFromCLI" xml:space="preserve">
+    <value>Add from CLI</value>
+  </data>
   <data name="AddHost" xml:space="preserve">
     <value>Add Host</value>
+  </data>
+  <data name="AddPortForwardingFromCLI" xml:space="preserve">
+    <value>Add Port Forwarding from CLI</value>
   </data>
   <data name="AddRule" xml:space="preserve">
     <value>Add Rule</value>
@@ -309,6 +318,12 @@
   </data>
   <data name="PID" xml:space="preserve">
     <value>PID</value>
+  </data>
+  <data name="PasteShareStringOrCommand" xml:space="preserve">
+    <value>Paste a share string or ssh command below:</value>
+  </data>
+  <data name="PasteForwardingOptionsHint" xml:space="preserve">
+    <value>Paste ssh forwarding options, for example: -L 8080:localhost:80 -D 1080</value>
   </data>
   <data name="Password" xml:space="preserve">
     <value>Password</value>

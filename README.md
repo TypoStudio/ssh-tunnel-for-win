@@ -52,6 +52,8 @@ dotnet build SSHTunnel4Win.sln -c Release
 - [x] Share tunnel configs as `sshtunnel://` URLs
 - [x] Import configs from share strings
 - [x] Copy equivalent CLI command (`ssh -L ...`)
+- [x] Create a tunnel config from an `ssh` command line
+- [x] Add port forwarding rules from CLI options (`-L` / `-R` / `-D`)
 
 ### System Tray
 - [x] Quick connect / disconnect from the system tray

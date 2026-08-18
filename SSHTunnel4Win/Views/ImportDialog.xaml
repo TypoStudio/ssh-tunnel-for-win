@@ -21,6 +21,10 @@
             </StackPanel>
         </GroupBox>
 
+        <!-- Hint -->
+        <TextBlock DockPanel.Dock="Top" Text="{x:Static res:Strings.PasteShareStringOrCommand}"
+                   TextWrapping="Wrap" Foreground="Gray" Margin="0,0,0,8"/>
+
         <!-- Input -->
         <TextBox x:Name="InputBox" AcceptsReturn="True" TextWrapping="Wrap"
                  VerticalScrollBarVisibility="Auto" FontFamily="Consolas" FontSize="12"

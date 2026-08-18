@@ -138,8 +138,11 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
 
-                        <Button Content="{x:Static res:Strings.AddRule}" Command="{Binding AddTunnelEntryCommand}"
-                                HorizontalAlignment="Left" Margin="0,4,0,0"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,4,0,0">
+                            <Button Content="{x:Static res:Strings.AddRule}" Command="{Binding AddTunnelEntryCommand}"
+                                    Margin="0,0,8,0"/>
+                            <Button Content="{x:Static res:Strings.AddFromCLI}" Command="{Binding AddFromCLICommand}"/>
+                        </StackPanel>
                     </StackPanel>
                 </GroupBox>
 

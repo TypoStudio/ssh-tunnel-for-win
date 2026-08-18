@@ -79,12 +79,7 @@ public partial class TunnelDetailViewModel : ObservableObject
 
         TunnelEntries.Clear();
         foreach (var entry in config.Tunnels)
-        {
-            var vm = new TunnelEntryViewModel(entry);
-            vm.PropertyChanged += (_, _) => { if (!_isLoading) SaveDraft(); };
-            vm.DeleteRequested += () => { TunnelEntries.Remove(vm); SaveDraft(); };
-            TunnelEntries.Add(vm);
-        }
+            AddEntry(entry);
 
         _isLoading = false;
         OnPropertyChanged(nameof(CanConnect));
@@ -162,14 +157,29 @@ public partial class TunnelDetailViewModel : ObservableObject
         _processManager.Connect(config);
     }
 
-    [RelayCommand]
-    private void AddTunnelEntry()
+    private void AddEntry(TunnelEntry entry)
     {
-        var entry = new TunnelEntry();
         var vm = new TunnelEntryViewModel(entry);
         vm.PropertyChanged += (_, _) => { if (!_isLoading) SaveDraft(); };
         vm.DeleteRequested += () => { TunnelEntries.Remove(vm); SaveDraft(); };
         TunnelEntries.Add(vm);
+    }
+
+    [RelayCommand]
+    private void AddTunnelEntry()
+    {
+        AddEntry(new TunnelEntry());
+        SaveDraft();
+    }
+
+    [RelayCommand]
+    private void AddFromCLI()
+    {
+        var dialog = new Views.ForwardingImportDialog { Owner = Application.Current?.MainWindow };
+        if (dialog.ShowDialog() != true) return;
+
+        foreach (var entry in dialog.Entries)
+            AddEntry(entry);
         SaveDraft();
     }
 
