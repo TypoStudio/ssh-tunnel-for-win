@@ -70,15 +70,15 @@
   <data name="HelpAuthDesc" xml:space="preserve"><value>使用 SSH 密钥文件（私钥）或密码认证。密码安全存储。</value></data>
   <data name="HelpDynamicDesc" xml:space="preserve"><value>动态 (-D): 在本地端口创建 SOCKS 代理。</value></data>
   <data name="HelpKeyboardShortcuts" xml:space="preserve"><value>快捷键</value></data>
-  <data name="HelpKeyboardShortcutsDesc" xml:space="preserve"><value>Ctrl+I: 导入, Ctrl+V: 粘贴分享链接, Ctrl+Q: 退出, Esc: 关闭对话框</value></data>
+  <data name="HelpKeyboardShortcutsDesc" xml:space="preserve"><value>Ctrl+N: 新建隧道/主机, Ctrl+I: 导入, Ctrl+V: 粘贴分享链接, Ctrl+,: 设置, Ctrl+Q: 退出, Delete: 删除所选项, Esc: 关闭对话框</value></data>
   <data name="HelpLocalDesc" xml:space="preserve"><value>本地 (-L): 通过 SSH 服务器将本地端口转发到远程目标。</value></data>
   <data name="HelpMenuBar" xml:space="preserve"><value>系统托盘</value></data>
-  <data name="HelpMenuBarDesc" xml:space="preserve"><value>通过系统托盘图标快速访问所有隧道。双击打开管理器。</value></data>
+  <data name="HelpMenuBarDesc" xml:space="preserve"><value>单击托盘图标打开管理器。右键单击可快速访问所有隧道。</value></data>
   <data name="HelpRemoteDesc" xml:space="preserve"><value>远程 (-R): 将 SSH 服务器的远程端口转发到本地目标。</value></data>
   <data name="HelpSSHConfig" xml:space="preserve"><value>SSH 配置</value></data>
   <data name="HelpSSHConfigDesc" xml:space="preserve"><value>浏览和编辑 ~/.ssh/config 及 ~/.ssh/config.d/ 中的 SSH 配置条目。</value></data>
   <data name="HelpShareImport" xml:space="preserve"><value>分享与导入</value></data>
-  <data name="HelpShareImportDesc" xml:space="preserve"><value>通过 sshtunnel:// URL 分享隧道配置。使用 Ctrl+V 粘贴或导入按钮导入。</value></data>
+  <data name="HelpShareImportDesc" xml:space="preserve"><value>通过 sshtunnel:// URL 分享隧道配置。使用 Ctrl+V 粘贴或导入按钮导入。 通过“文件 &gt; 从 PuTTY 导入”可导入已保存的 PuTTY 和 KiTTY 会话，包括 .ppk 密钥和缓存的主机密钥。</value></data>
   <data name="HelpTunnelManagement" xml:space="preserve"><value>隧道管理</value></data>
   <data name="HelpTunnelManagementDesc" xml:space="preserve"><value>创建本地、远程或动态端口转发的 SSH 隧道。每个隧道可包含多个转发规则。</value></data>
   <data name="HelpTunnelTypes" xml:space="preserve"><value>隧道类型</value></data>
@@ -101,7 +101,9 @@
   <data name="MoveUp" xml:space="preserve"><value>上移</value></data>
   <data name="Name" xml:space="preserve"><value>名称</value></data>
   <data name="NewTunnel" xml:space="preserve"><value>新建隧道</value></data>
-  <data name="NewVersionAvailable" xml:space="preserve"><value>有新版本 {0} 可用。</value></data>
+  <data name="NewVersionAvailable" xml:space="preserve"><value>有新版本 {0} 可用。
+
+立即下载并安装吗？</value></data>
   <data name="NoHostSelected" xml:space="preserve"><value>未选择主机</value></data>
   <data name="NoHostsInConfig" xml:space="preserve"><value>~/.ssh/config 中未找到主机</value></data>
   <data name="NoLogAvailable" xml:space="preserve"><value>无可用日志。</value></data>
@@ -122,7 +124,9 @@
   <data name="Password" xml:space="preserve"><value>密码</value></data>
   <data name="Port" xml:space="preserve"><value>端口</value></data>
   <data name="PortConflict" xml:space="preserve"><value>端口冲突</value></data>
-  <data name="PortConflictMessage" xml:space="preserve"><value>端口 {0} 已被占用，连接可能失败。</value></data>
+  <data name="PortConflictMessage" xml:space="preserve"><value>端口 {0} 已被占用，连接可能失败。
+
+仍要连接吗？</value></data>
   <data name="PortForwarding" xml:space="preserve"><value>端口转发</value></data>
   <data name="Preview" xml:space="preserve"><value>预览</value></data>
   <data name="Processes" xml:space="preserve"><value>进程</value></data>
@@ -165,4 +169,69 @@
   <data name="Value" xml:space="preserve"><value>值</value></data>
   <data name="Version" xml:space="preserve"><value>版本</value></data>
   <data name="VersionAvailable" xml:space="preserve"><value>v{0} 可用</value></data>
+  <data name="ConfirmDeleteTunnel" xml:space="preserve"><value>删除隧道“{0}”？此操作无法撤销。</value></data>
+  <data name="ConfirmDeleteHost" xml:space="preserve"><value>从 {1} 中删除主机“{0}”？此操作无法撤销。</value></data>
+  <data name="ConfirmKillAll" xml:space="preserve"><value>终止列出的全部 {0} 个 SSH 进程？其中包括并非由本应用启动的进程。</value></data>
+  <data name="ConnectRequirements" xml:space="preserve"><value>请输入主机、用户名以及至少一条完整的转发规则后再连接。</value></data>
+  <data name="DeleteRule" xml:space="preserve"><value>删除规则</value></data>
+  <data name="DeleteDirective" xml:space="preserve"><value>删除指令</value></data>
+  <data name="ListenPort" xml:space="preserve"><value>监听端口</value></data>
+  <data name="DestinationHost" xml:space="preserve"><value>目标主机</value></data>
+  <data name="DestinationPort" xml:space="preserve"><value>目标端口</value></data>
+  <data name="ListenPortTip" xml:space="preserve"><value>本地 (-L) / 动态 (-D)：本机端口。远程 (-R)：SSH 服务器上的端口。</value></data>
+  <data name="DestinationTip" xml:space="preserve"><value>连接转发的目标。本地 (-L)：以 SSH 服务器为准。远程 (-R)：以本机为准。</value></data>
+  <data name="StillRunningInTray" xml:space="preserve"><value>仍在通知区域运行。如需退出，请右键单击托盘图标并选择“退出”。</value></data>
+  <data name="TrayTooltipConnected" xml:space="preserve"><value>{0}
+已连接 {1} 个隧道</value></data>
+  <data name="UpdateCheckFailed" xml:space="preserve"><value>无法检查更新。请检查网络连接后重试。</value></data>
+  <data name="ConnectionFailedExit" xml:space="preserve"><value>连接失败（退出代码 {0}）</value></data>
+  <data name="ShareStringNotRecognized" xml:space="preserve"><value>无法识别。请粘贴 sshtunnel:// 分享链接或 ssh 命令。</value></data>
+  <data name="ForwardingNotRecognized" xml:space="preserve"><value>未找到转发选项。请使用 -L、-R 或 -D。</value></data>
+  <data name="InvalidSSHConfigText" xml:space="preserve"><value>无法解析该文本。请确保以 “Host” 行开头。</value></data>
+  <data name="Load" xml:space="preserve"><value>加载</value></data>
+  <data name="NoHosts" xml:space="preserve"><value>无主机</value></data>
+  <data name="AddHostHint" xml:space="preserve"><value>按 + 添加新主机。</value></data>
+  <data name="AlreadyRunning" xml:space="preserve"><value>SSH 隧道管理器已在运行。</value></data>
+  <data name="Status" xml:space="preserve"><value>状态</value></data>
+  <data name="ImportFromPuTTY" xml:space="preserve"><value>从 PuTTY 导入...</value></data>
+  <data name="ImportFromPuTTYButton" xml:space="preserve"><value>从 PuTTY 导入</value></data>
+  <data name="ImportSessionsTitle" xml:space="preserve"><value>导入会话</value></data>
+  <data name="ImportSource" xml:space="preserve"><value>导入来源：</value></data>
+  <data name="Session" xml:space="preserve"><value>会话</value></data>
+  <data name="Notes" xml:space="preserve"><value>备注</value></data>
+  <data name="Rules" xml:space="preserve"><value>规则</value></data>
+  <data name="SelectAll" xml:space="preserve"><value>全选</value></data>
+  <data name="SelectNone" xml:space="preserve"><value>全不选</value></data>
+  <data name="SelectedCount" xml:space="preserve"><value>已选择 {0}/{1} 个</value></data>
+  <data name="ImportHostKeys" xml:space="preserve"><value>将所选会话的缓存主机密钥导入 ~/.ssh/known_hosts</value></data>
+  <data name="NoPuttySessions" xml:space="preserve"><value>未找到已保存的 PuTTY 或 KiTTY 会话。</value></data>
+  <data name="PuttyIssueDefault" xml:space="preserve"><value>默认设置模板</value></data>
+  <data name="PuttyIssueNotSsh" xml:space="preserve"><value>{0} 会话；仅可导入 SSH</value></data>
+  <data name="PuttyIssueNoHost" xml:space="preserve"><value>无主机名</value></data>
+  <data name="PuttyAlreadyImported" xml:space="preserve"><value>已导入</value></data>
+  <data name="PuttyNoteKey" xml:space="preserve"><value>密钥：{0}</value></data>
+  <data name="PuttyNoteEncryptedKey" xml:space="preserve"><value>受密码保护的密钥：{0}</value></data>
+  <data name="PuttyNoteNoRules" xml:space="preserve"><value>尚无端口转发</value></data>
+  <data name="PuttyWarnKeyMissing" xml:space="preserve"><value>找不到密钥文件</value></data>
+  <data name="PuttyWarnNoKey" xml:space="preserve"><value>使用密码；请在导入后输入</value></data>
+  <data name="PuttyWarnProxy" xml:space="preserve"><value>未导入代理设置</value></data>
+  <data name="PuttyWarnBadRules" xml:space="preserve"><value>{0} 条转发规则无法读取</value></data>
+  <data name="KeyErrorUnsupportedVersion" xml:space="preserve"><value>此 PuTTY 密钥格式过旧。请在 PuTTYgen 中打开该密钥并重新保存。</value></data>
+  <data name="KeyErrorUnsupportedAlgorithm" xml:space="preserve"><value>Windows OpenSSH 不支持此密钥类型（{0}）。</value></data>
+  <data name="KeyErrorPassphraseRequired" xml:space="preserve"><value>此密钥受密码保护。请在“身份验证”中输入密码。</value></data>
+  <data name="KeyErrorWrongPassphrase" xml:space="preserve"><value>密钥密码错误。</value></data>
+  <data name="KeyErrorCorrupt" xml:space="preserve"><value>密钥文件已损坏或不完整。</value></data>
+  <data name="KeyErrorNotPutty" xml:space="preserve"><value>该文件不是 PuTTY 私钥。</value></data>
+  <data name="PassphraseTitle" xml:space="preserve"><value>密钥密码</value></data>
+  <data name="PassphrasePrompt" xml:space="preserve"><value>请输入此 PuTTY 密钥的密码。密码将针对您的 Windows 帐户加密保存，以便隧道无需询问即可连接。</value></data>
+  <data name="PassphraseUsedBy" xml:space="preserve"><value>使用者：{0}</value></data>
+  <data name="Skip" xml:space="preserve"><value>跳过</value></data>
+  <data name="KeyPassphrase" xml:space="preserve"><value>密钥密码（如有）</value></data>
+  <data name="ImportSummary" xml:space="preserve"><value>已导入 {0} 个会话。</value></data>
+  <data name="ImportSummaryHostKeys" xml:space="preserve"><value>已向 known_hosts 添加 {0} 个主机密钥。</value></data>
+  <data name="ImportSummaryHostKeyConflicts" xml:space="preserve"><value>由于 known_hosts 中已有该服务器的不同密钥，已跳过 {0} 个主机密钥。</value></data>
+  <data name="ImportSummaryNeedsAttention" xml:space="preserve"><value>连接前需要处理：</value></data>
+  <data name="ImportSummaryNoPassphrase" xml:space="preserve"><value>未保存密钥密码</value></data>
+  <data name="PrivateKeys" xml:space="preserve"><value>私钥</value></data>
+  <data name="AllFiles" xml:space="preserve"><value>所有文件</value></data>
 </root>

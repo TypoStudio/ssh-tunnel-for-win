@@ -5,6 +5,7 @@ using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SSHTunnel4Win.Models;
+using SSHTunnel4Win.Resources;
 using SSHTunnel4Win.Services;
 
 namespace SSHTunnel4Win.ViewModels;
@@ -29,6 +30,7 @@ public partial class SSHConfigDetailViewModel : ObservableObject
     [ObservableProperty] private bool _commented;
     [ObservableProperty] private bool _isTextEditMode;
     [ObservableProperty] private string _textEditContent = "";
+    [ObservableProperty] private string _textEditError = "";
 
     public ObservableCollection<string> AvailableFiles { get; } = new();
     public ObservableCollection<DirectiveViewModel> OtherDirectives { get; } = new();
@@ -133,14 +135,18 @@ public partial class SSHConfigDetailViewModel : ObservableObject
             if (entry != null)
             {
                 var parsed = SSHConfigParser.ParseFullContent(TextEditContent, entry.SourceFile);
-                if (parsed.Count > 0)
+                if (parsed.Count == 0)
                 {
-                    var newEntry = parsed[0];
-                    newEntry.Id = entry.Id;
-                    _store.Update(newEntry);
-                    LoadEntry();
+                    // Stay in text mode so the user's edits aren't thrown away
+                    TextEditError = Strings.InvalidSSHConfigText;
+                    return;
                 }
+                var newEntry = parsed[0];
+                newEntry.Id = entry.Id;
+                _store.Update(newEntry);
+                LoadEntry();
             }
+            TextEditError = "";
             IsTextEditMode = false;
         }
         else
@@ -149,8 +155,16 @@ public partial class SSHConfigDetailViewModel : ObservableObject
             var entry = _store.Entries.FirstOrDefault(e => e.Id == _entryId);
             if (entry == null) return;
             TextEditContent = SSHConfigParser.Serialize(new System.Collections.Generic.List<SSHConfigEntry> { entry });
+            TextEditError = "";
             IsTextEditMode = true;
         }
+    }
+
+    [RelayCommand]
+    private void CancelTextEdit()
+    {
+        TextEditError = "";
+        IsTextEditMode = false;
     }
 
     [RelayCommand]
@@ -162,7 +176,12 @@ public partial class SSHConfigDetailViewModel : ObservableObject
         {
             Process.Start(new ProcessStartInfo { FileName = file, UseShellExecute = true });
         }
-        catch { }
+        catch
+        {
+            // ~/.ssh/config has no extension, so there's often no associated app; fall back to Notepad
+            try { Process.Start(new ProcessStartInfo { FileName = "notepad.exe", Arguments = $"\"{file}\"", UseShellExecute = true }); }
+            catch (Exception ex) { Views.Prompt.Warn(ex.Message, Strings.OpenInEditor); }
+        }
     }
 
     [RelayCommand]
@@ -172,7 +191,7 @@ public partial class SSHConfigDetailViewModel : ObservableObject
         {
             InitialDirectory = System.IO.Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ssh"),
-            Filter = "All files (*.*)|*.*"
+            Filter = $"{Strings.PrivateKeys} (*.ppk;id_*;*.pem;*.key)|*.ppk;id_*;*.pem;*.key|{Strings.AllFiles} (*.*)|*.*"
         };
         if (dialog.ShowDialog() == true)
             IdentityFile = dialog.FileName;

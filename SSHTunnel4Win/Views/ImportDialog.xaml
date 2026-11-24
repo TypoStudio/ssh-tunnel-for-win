@@ -3,31 +3,38 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:res="clr-namespace:SSHTunnel4Win.Resources"
         Title="{x:Static res:Strings.ImportFromShareString}"
-        Width="500" Height="400" ResizeMode="NoResize"
+        Width="520" Height="420" MinWidth="380" MinHeight="300"
+        ResizeMode="CanResizeWithGrip" ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner">
     <DockPanel Margin="16">
-        <!-- Buttons -->
+        <!-- Buttons: primary first, per Windows convention -->
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
-            <Button Content="{x:Static res:Strings.Cancel}" Width="80" Click="CancelClick" Margin="0,0,8,0"/>
-            <Button x:Name="ImportBtn" Content="{x:Static res:Strings.Import}" Width="80" Click="ImportClick" IsEnabled="False"/>
+            <Button x:Name="ImportBtn" Content="{x:Static res:Strings.Import}" Style="{StaticResource DialogButton}"
+                    Click="ImportClick" IsEnabled="False" IsDefault="True" Margin="0,0,8,0"/>
+            <Button Content="{x:Static res:Strings.Cancel}" Style="{StaticResource DialogButton}" IsCancel="True"/>
         </StackPanel>
 
         <!-- Preview -->
         <GroupBox DockPanel.Dock="Bottom" Header="{x:Static res:Strings.Preview}" Margin="0,8,0,0" x:Name="PreviewBox" Visibility="Collapsed">
             <StackPanel Margin="8">
-                <TextBlock x:Name="PreviewName"/>
-                <TextBlock x:Name="PreviewHost" Foreground="Gray"/>
-                <TextBlock x:Name="PreviewTunnels" Foreground="Gray"/>
+                <TextBlock x:Name="PreviewName" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                <TextBlock x:Name="PreviewHost" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" TextTrimming="CharacterEllipsis"/>
+                <TextBlock x:Name="PreviewTunnels" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" TextWrapping="Wrap"/>
             </StackPanel>
         </GroupBox>
 
+        <!-- Validation message, shown only when there is input we can't read -->
+        <TextBlock x:Name="InvalidText" DockPanel.Dock="Bottom" Text="{x:Static res:Strings.ShareStringNotRecognized}"
+                   Foreground="#C42B1C" TextWrapping="Wrap" Margin="0,6,0,0" Visibility="Collapsed"/>
+
         <!-- Hint -->
         <TextBlock DockPanel.Dock="Top" Text="{x:Static res:Strings.PasteShareStringOrCommand}"
-                   TextWrapping="Wrap" Foreground="Gray" Margin="0,0,0,8"/>
+                   TextWrapping="Wrap" Margin="0,0,0,8"/>
 
         <!-- Input -->
         <TextBox x:Name="InputBox" AcceptsReturn="True" TextWrapping="Wrap"
                  VerticalScrollBarVisibility="Auto" FontFamily="Consolas" FontSize="12"
+                 AutomationProperties.Name="{x:Static res:Strings.PasteShareStringOrCommand}"
                  TextChanged="InputChanged"/>
     </DockPanel>
 </Window>

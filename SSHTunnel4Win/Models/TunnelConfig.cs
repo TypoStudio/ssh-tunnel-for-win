@@ -89,6 +89,10 @@ public class TunnelEntry
         }
     }
 
+    [JsonIgnore]
+    public bool IsComplete => LocalPort > 0 &&
+        (Type == TunnelType.Dynamic || (!string.IsNullOrWhiteSpace(RemoteHost) && RemotePort > 0));
+
     public TunnelEntry Clone() => new()
     {
         Id = Id,
@@ -137,6 +141,15 @@ public class SSHTunnelConfig
 
     [JsonPropertyName("additionalArgs")]
     public string AdditionalArgs { get; set; } = "";
+
+    [JsonIgnore]
+    public string DisplayName => string.IsNullOrEmpty(Name) ? Host : Name;
+
+    /// <summary>True when enough is filled in for ssh to have a chance of connecting.</summary>
+    [JsonIgnore]
+    public bool IsConnectable =>
+        !string.IsNullOrWhiteSpace(Host) && !string.IsNullOrWhiteSpace(Username) &&
+        Tunnels.Count > 0 && Tunnels.TrueForAll(t => t.IsComplete);
 
     public SSHTunnelConfig Clone() => new()
     {

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Management;
 using System.Windows;
 using System.Windows.Controls;
+using SSHTunnel4Win.Resources;
 
 namespace SSHTunnel4Win.Views;
 
@@ -44,10 +45,8 @@ public partial class ProcessListDialog : Window
         catch { }
 
         ProcessGrid.ItemsSource = processes;
-        if (processes.Count == 0)
-        {
-            ProcessGrid.ItemsSource = null;
-        }
+        EmptyText.Visibility = processes.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        KillAllBtn.IsEnabled = processes.Count > 0;
     }
 
     private static string GetCommandLine(int pid)
@@ -69,8 +68,11 @@ public partial class ProcessListDialog : Window
 
     private void KillAllClick(object sender, RoutedEventArgs e)
     {
-        if (ProcessGrid.ItemsSource is List<SSHProcessInfo> processes)
+        if (ProcessGrid.ItemsSource is List<SSHProcessInfo> { Count: > 0 } processes)
         {
+            // This can kill ssh sessions the app didn't start, so make it deliberate
+            if (!Prompt.Confirm(string.Format(Strings.ConfirmKillAll, processes.Count), Strings.KillAll))
+                return;
             foreach (var p in processes)
             {
                 try { Process.GetProcessById(p.Pid).Kill(); } catch { }
@@ -87,6 +89,4 @@ public partial class ProcessListDialog : Window
             RefreshProcesses();
         }
     }
-
-    private void CloseClick(object sender, RoutedEventArgs e) => Close();
 }

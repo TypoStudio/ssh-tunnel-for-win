@@ -15,6 +15,7 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private string _updateStatus = "";
     [ObservableProperty] private bool _isCheckingUpdate;
     [ObservableProperty] private bool _isUpdateAvailable;
+    [ObservableProperty] private bool _updateCheckFailed;
 
     private UpdateInfo? _latestUpdate;
 
@@ -31,9 +32,23 @@ public partial class SettingsViewModel : ObservableObject
     {
         IsCheckingUpdate = true;
         IsUpdateAvailable = false;
+        UpdateCheckFailed = false;
         UpdateStatus = Strings.Checking;
 
-        var info = await UpdateService.CheckForUpdateAsync();
+        UpdateInfo? info;
+        try
+        {
+            info = await UpdateService.CheckForUpdateOrThrowAsync();
+        }
+        catch
+        {
+            // Don't report "up to date" when we simply couldn't reach GitHub
+            _latestUpdate = null;
+            UpdateCheckFailed = true;
+            UpdateStatus = Strings.UpdateCheckFailed;
+            IsCheckingUpdate = false;
+            return;
+        }
 
         if (info != null)
         {
@@ -65,6 +80,8 @@ public partial class SettingsViewModel : ObservableObject
             }
             catch
             {
+                UpdateStatus = Strings.UpdateFailed;
+                UpdateCheckFailed = true;
                 Process.Start(new ProcessStartInfo { FileName = _latestUpdate.HtmlUrl, UseShellExecute = true });
             }
         }

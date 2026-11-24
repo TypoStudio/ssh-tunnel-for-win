@@ -179,7 +179,7 @@
     <value>Keyboard Shortcuts</value>
   </data>
   <data name="HelpKeyboardShortcutsDesc" xml:space="preserve">
-    <value>Ctrl+I: Import, Ctrl+V: Paste share string, Ctrl+Q: Quit, Esc: Close dialog</value>
+    <value>Ctrl+N: New tunnel/host, Ctrl+I: Import, Ctrl+V: Paste share string, Ctrl+,: Settings, Ctrl+Q: Quit, Delete: Delete selected item, Esc: Close dialog</value>
   </data>
   <data name="HelpLocalDesc" xml:space="preserve">
     <value>Local (-L): Forward a local port to a remote destination through the SSH server.</value>
@@ -188,7 +188,7 @@
     <value>System Tray</value>
   </data>
   <data name="HelpMenuBarDesc" xml:space="preserve">
-    <value>Quick access to all tunnels from the system tray icon. Double-click to open the manager.</value>
+    <value>Click the tray icon to open the manager. Right-click it for quick access to all tunnels.</value>
   </data>
   <data name="HelpRemoteDesc" xml:space="preserve">
     <value>Remote (-R): Forward a remote port on the SSH server to a local destination.</value>
@@ -203,7 +203,7 @@
     <value>Share &amp; Import</value>
   </data>
   <data name="HelpShareImportDesc" xml:space="preserve">
-    <value>Share tunnel configurations as sshtunnel:// URLs. Import by pasting with Ctrl+V or using the import button.</value>
+    <value>Share tunnel configurations as sshtunnel:// URLs. Import by pasting with Ctrl+V or using the import button. File &gt; Import from PuTTY brings in saved PuTTY and KiTTY sessions, including .ppk keys and cached host keys.</value>
   </data>
   <data name="HelpTunnelManagement" xml:space="preserve">
     <value>Tunnel Management</value>
@@ -272,7 +272,9 @@
     <value>New Tunnel</value>
   </data>
   <data name="NewVersionAvailable" xml:space="preserve">
-    <value>A new version {0} is available.</value>
+    <value>A new version {0} is available.
+
+Download and install it now?</value>
   </data>
   <data name="NoHostSelected" xml:space="preserve">
     <value>No Host Selected</value>
@@ -335,7 +337,9 @@
     <value>Port Conflict</value>
   </data>
   <data name="PortConflictMessage" xml:space="preserve">
-    <value>Port {0} is already in use. The connection may fail.</value>
+    <value>Port {0} is already in use, so the connection may fail.
+
+Connect anyway?</value>
   </data>
   <data name="PortForwarding" xml:space="preserve">
     <value>Port Forwarding</value>
@@ -444,5 +448,198 @@
   </data>
   <data name="VersionAvailable" xml:space="preserve">
     <value>v{0} available</value>
+  </data>
+  <data name="ConfirmDeleteTunnel" xml:space="preserve">
+    <value>Delete tunnel "{0}"? This cannot be undone.</value>
+  </data>
+  <data name="ConfirmDeleteHost" xml:space="preserve">
+    <value>Delete host "{0}" from {1}? This cannot be undone.</value>
+  </data>
+  <data name="ConfirmKillAll" xml:space="preserve">
+    <value>Terminate all {0} listed SSH processes? This includes processes not started by this app.</value>
+  </data>
+  <data name="ConnectRequirements" xml:space="preserve">
+    <value>Enter a host, a username and at least one complete forwarding rule to connect.</value>
+  </data>
+  <data name="DeleteRule" xml:space="preserve">
+    <value>Delete rule</value>
+  </data>
+  <data name="DeleteDirective" xml:space="preserve">
+    <value>Delete directive</value>
+  </data>
+  <data name="ListenPort" xml:space="preserve">
+    <value>Listen Port</value>
+  </data>
+  <data name="DestinationHost" xml:space="preserve">
+    <value>Destination Host</value>
+  </data>
+  <data name="DestinationPort" xml:space="preserve">
+    <value>Destination Port</value>
+  </data>
+  <data name="ListenPortTip" xml:space="preserve">
+    <value>Local (-L) / Dynamic (-D): port on this PC. Remote (-R): port on the SSH server.</value>
+  </data>
+  <data name="DestinationTip" xml:space="preserve">
+    <value>Where connections are forwarded to. Local (-L): as seen from the SSH server. Remote (-R): as seen from this PC.</value>
+  </data>
+  <data name="StillRunningInTray" xml:space="preserve">
+    <value>Still running in the notification area. Right-click the tray icon and choose Quit to exit.</value>
+  </data>
+  <data name="TrayTooltipConnected" xml:space="preserve">
+    <value>{0}
+{1} tunnel(s) connected</value>
+  </data>
+  <data name="UpdateCheckFailed" xml:space="preserve">
+    <value>Couldn't check for updates. Check your internet connection and try again.</value>
+  </data>
+  <data name="ConnectionFailedExit" xml:space="preserve">
+    <value>Connection failed (exit code {0})</value>
+  </data>
+  <data name="ShareStringNotRecognized" xml:space="preserve">
+    <value>Not recognized. Paste a sshtunnel:// share string or an ssh command.</value>
+  </data>
+  <data name="ForwardingNotRecognized" xml:space="preserve">
+    <value>No forwarding options found. Use -L, -R or -D.</value>
+  </data>
+  <data name="InvalidSSHConfigText" xml:space="preserve">
+    <value>The text could not be parsed. Make sure it starts with a "Host" line.</value>
+  </data>
+  <data name="Load" xml:space="preserve">
+    <value>Load</value>
+  </data>
+  <data name="NoHosts" xml:space="preserve">
+    <value>No Hosts</value>
+  </data>
+  <data name="AddHostHint" xml:space="preserve">
+    <value>Add a new host with +.</value>
+  </data>
+  <data name="AlreadyRunning" xml:space="preserve">
+    <value>SSH Tunnel Manager is already running.</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="ImportFromPuTTY" xml:space="preserve">
+    <value>Import from PuTTY...</value>
+  </data>
+  <data name="ImportFromPuTTYButton" xml:space="preserve">
+    <value>Import from PuTTY</value>
+  </data>
+  <data name="ImportSessionsTitle" xml:space="preserve">
+    <value>Import Sessions</value>
+  </data>
+  <data name="ImportSource" xml:space="preserve">
+    <value>Import from:</value>
+  </data>
+  <data name="Session" xml:space="preserve">
+    <value>Session</value>
+  </data>
+  <data name="Notes" xml:space="preserve">
+    <value>Notes</value>
+  </data>
+  <data name="Rules" xml:space="preserve">
+    <value>Rules</value>
+  </data>
+  <data name="SelectAll" xml:space="preserve">
+    <value>Select All</value>
+  </data>
+  <data name="SelectNone" xml:space="preserve">
+    <value>Select None</value>
+  </data>
+  <data name="SelectedCount" xml:space="preserve">
+    <value>{0} of {1} selected</value>
+  </data>
+  <data name="ImportHostKeys" xml:space="preserve">
+    <value>Import cached host keys of selected sessions into ~/.ssh/known_hosts</value>
+  </data>
+  <data name="NoPuttySessions" xml:space="preserve">
+    <value>No saved PuTTY or KiTTY sessions were found.</value>
+  </data>
+  <data name="PuttyIssueDefault" xml:space="preserve">
+    <value>Default settings template</value>
+  </data>
+  <data name="PuttyIssueNotSsh" xml:space="preserve">
+    <value>{0} session; only SSH can be imported</value>
+  </data>
+  <data name="PuttyIssueNoHost" xml:space="preserve">
+    <value>No host name</value>
+  </data>
+  <data name="PuttyAlreadyImported" xml:space="preserve">
+    <value>Already imported</value>
+  </data>
+  <data name="PuttyNoteKey" xml:space="preserve">
+    <value>Key: {0}</value>
+  </data>
+  <data name="PuttyNoteEncryptedKey" xml:space="preserve">
+    <value>Passphrase-protected key: {0}</value>
+  </data>
+  <data name="PuttyNoteNoRules" xml:space="preserve">
+    <value>No port forwarding yet</value>
+  </data>
+  <data name="PuttyWarnKeyMissing" xml:space="preserve">
+    <value>Key file not found</value>
+  </data>
+  <data name="PuttyWarnNoKey" xml:space="preserve">
+    <value>Uses a password; enter it after importing</value>
+  </data>
+  <data name="PuttyWarnProxy" xml:space="preserve">
+    <value>Proxy setting not imported</value>
+  </data>
+  <data name="PuttyWarnBadRules" xml:space="preserve">
+    <value>{0} forwarding rule(s) could not be read</value>
+  </data>
+  <data name="KeyErrorUnsupportedVersion" xml:space="preserve">
+    <value>This PuTTY key format is too old. Open the key in PuTTYgen and save it again.</value>
+  </data>
+  <data name="KeyErrorUnsupportedAlgorithm" xml:space="preserve">
+    <value>This key type ({0}) isn't supported by Windows OpenSSH.</value>
+  </data>
+  <data name="KeyErrorPassphraseRequired" xml:space="preserve">
+    <value>This key is protected by a passphrase. Enter it under Authentication.</value>
+  </data>
+  <data name="KeyErrorWrongPassphrase" xml:space="preserve">
+    <value>Wrong passphrase for this key.</value>
+  </data>
+  <data name="KeyErrorCorrupt" xml:space="preserve">
+    <value>The key file is damaged or incomplete.</value>
+  </data>
+  <data name="KeyErrorNotPutty" xml:space="preserve">
+    <value>The file is not a PuTTY private key.</value>
+  </data>
+  <data name="PassphraseTitle" xml:space="preserve">
+    <value>Key Passphrase</value>
+  </data>
+  <data name="PassphrasePrompt" xml:space="preserve">
+    <value>Enter the passphrase for this PuTTY key. It is saved encrypted for your Windows account, so tunnels can connect without asking.</value>
+  </data>
+  <data name="PassphraseUsedBy" xml:space="preserve">
+    <value>Used by: {0}</value>
+  </data>
+  <data name="Skip" xml:space="preserve">
+    <value>Skip</value>
+  </data>
+  <data name="KeyPassphrase" xml:space="preserve">
+    <value>Key passphrase (if the key has one)</value>
+  </data>
+  <data name="ImportSummary" xml:space="preserve">
+    <value>Imported {0} session(s).</value>
+  </data>
+  <data name="ImportSummaryHostKeys" xml:space="preserve">
+    <value>Added {0} host key(s) to known_hosts.</value>
+  </data>
+  <data name="ImportSummaryHostKeyConflicts" xml:space="preserve">
+    <value>Skipped {0} host key(s) because known_hosts already has a different key for that server.</value>
+  </data>
+  <data name="ImportSummaryNeedsAttention" xml:space="preserve">
+    <value>Needs attention before connecting:</value>
+  </data>
+  <data name="ImportSummaryNoPassphrase" xml:space="preserve">
+    <value>key passphrase not saved</value>
+  </data>
+  <data name="PrivateKeys" xml:space="preserve">
+    <value>Private keys</value>
+  </data>
+  <data name="AllFiles" xml:space="preserve">
+    <value>All files</value>
   </data>
 </root>

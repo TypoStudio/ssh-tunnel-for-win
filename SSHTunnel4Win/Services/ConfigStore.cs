@@ -108,6 +108,13 @@ public class ConfigStore
         ConfigsChanged?.Invoke();
     }
 
+    public void AddRange(IEnumerable<SSHTunnelConfig> configs)
+    {
+        Configs.AddRange(configs);
+        Save();
+        ConfigsChanged?.Invoke();
+    }
+
     public void Update(SSHTunnelConfig config)
     {
         var index = Configs.FindIndex(c => c.Id == config.Id);

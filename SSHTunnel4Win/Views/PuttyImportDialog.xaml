@@ -1,0 +1,109 @@
+<Window x:Class="SSHTunnel4Win.Views.PuttyImportDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:res="clr-namespace:SSHTunnel4Win.Resources"
+        Title="{x:Static res:Strings.ImportSessionsTitle}"
+        Width="760" Height="520" MinWidth="520" MinHeight="340"
+        ResizeMode="CanResizeWithGrip" ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner">
+    <DockPanel Margin="16">
+        <!-- Source -->
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,10">
+            <TextBlock Text="{x:Static res:Strings.ImportSource}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+            <ComboBox x:Name="SourceBox" MinWidth="140" DisplayMemberPath="Name"
+                      SelectionChanged="SourceChanged" AutomationProperties.Name="{x:Static res:Strings.ImportSource}"/>
+        </StackPanel>
+
+        <!-- Buttons: primary first, per Windows convention -->
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button x:Name="ImportBtn" Content="{x:Static res:Strings.Import}" Style="{StaticResource DialogButton}"
+                    Click="ImportClick" IsDefault="True" Margin="0,0,8,0"/>
+            <Button Content="{x:Static res:Strings.Cancel}" Style="{StaticResource DialogButton}" IsCancel="True"/>
+        </StackPanel>
+
+        <!-- TextBlock content: a plain string would treat the "_" in known_hosts as an access key -->
+        <CheckBox x:Name="HostKeysBox" DockPanel.Dock="Bottom" IsChecked="True" Margin="0,10,0,0"
+                  AutomationProperties.Name="{x:Static res:Strings.ImportHostKeys}">
+            <TextBlock Text="{x:Static res:Strings.ImportHostKeys}" TextWrapping="Wrap"/>
+        </CheckBox>
+
+        <!-- Selection helpers -->
+        <DockPanel DockPanel.Dock="Bottom" Margin="0,8,0,0">
+            <Button DockPanel.Dock="Left" Content="{x:Static res:Strings.SelectAll}" Click="SelectAllClick"
+                    Padding="10,2" Margin="0,0,8,0"/>
+            <Button DockPanel.Dock="Left" Content="{x:Static res:Strings.SelectNone}" Click="SelectNoneClick"
+                    Padding="10,2"/>
+            <TextBlock x:Name="CountText" HorizontalAlignment="Right" VerticalAlignment="Center"
+                       Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+        </DockPanel>
+
+        <Grid>
+            <ListView x:Name="SessionList" SelectionMode="Extended" KeyDown="ListKeyDown"
+                      MouseDoubleClick="ListDoubleClick"
+                      AutomationProperties.Name="{x:Static res:Strings.ImportSessionsTitle}">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <Setter Property="AutomationProperties.Name" Value="{Binding Name}"/>
+                        <Setter Property="ToolTip" Value="{Binding Notes}"/>
+                        <Style.Triggers>
+                            <!-- Sessions that can't be imported stay listed (so users see why) but dimmed -->
+                            <DataTrigger Binding="{Binding IsEnabled}" Value="False">
+                                <Setter Property="Opacity" Value="0.55"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Width="34">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding IsChecked}" IsEnabled="{Binding IsEnabled}"
+                                              AutomationProperties.Name="{Binding Name}" Focusable="False"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="{x:Static res:Strings.Session}" Width="170">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="{x:Static res:Strings.Host}" Width="190">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Target}" TextTrimming="CharacterEllipsis"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="{x:Static res:Strings.Rules}" Width="50">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding RulesText}" HorizontalAlignment="Center"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="{x:Static res:Strings.Notes}" Width="260">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE7BA;" Style="{StaticResource IconGlyph}" FontSize="12"
+                                                   Foreground="#C47F00" Margin="0,0,6,0"
+                                                   Visibility="{Binding HasWarning, Converter={StaticResource BoolToVis}}"/>
+                                        <TextBlock Text="{Binding Notes}" TextTrimming="CharacterEllipsis"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+            <TextBlock x:Name="EmptyText" Text="{x:Static res:Strings.NoPuttySessions}" Visibility="Collapsed"
+                       Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                       HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False"/>
+        </Grid>
+    </DockPanel>
+</Window>

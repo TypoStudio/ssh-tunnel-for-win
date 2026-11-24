@@ -55,6 +55,7 @@ public partial class MainViewModel : ObservableObject
 
     partial void OnSelectedTunnelIdChanged(Guid? value)
     {
+        CurrentTunnelDetail?.Detach();
         if (value is Guid id)
             CurrentTunnelDetail = new TunnelDetailViewModel(_configStore, _processManager, _status, id);
         else
@@ -77,16 +78,48 @@ public partial class MainViewModel : ObservableObject
         SelectedTunnelId = config.Id;
     }
 
-    [RelayCommand]
-    private void DeleteTunnel(Guid id)
+    /// <summary>Deletes a tunnel after the user confirms. Returns true if it was deleted.</summary>
+    public bool ConfirmAndDeleteTunnel(Guid id)
     {
+        var config = _configStore.FindById(id);
+        if (config == null) return false;
+        if (!Views.Prompt.Confirm(string.Format(Strings.ConfirmDeleteTunnel, config.DisplayName), Strings.Delete))
+            return false;
         _processManager.Disconnect(id);
+        _processManager.CancelReconnect(id);
         _configStore.Delete(id);
         if (SelectedTunnelId == id) SelectedTunnelId = null;
+        return true;
     }
 
-    [RelayCommand]
-    private void ToggleTunnel(SSHTunnelConfig config) => _processManager.Toggle(config);
+    /// <summary>
+    /// Connects or disconnects a tunnel. Every connect entry point (detail view, list, tray)
+    /// goes through here so they all get the same port-conflict prompt.
+    /// </summary>
+    public void Toggle(SSHTunnelConfig config)
+    {
+        if (_status.GetState(config.Id).IsActive())
+        {
+            _processManager.Disconnect(config.Id);
+            return;
+        }
+        if (!config.IsConnectable)
+        {
+            Views.Prompt.Warn(Strings.ConnectRequirements, config.DisplayName);
+            return;
+        }
+        if (!ConfirmPortConflicts(_processManager, config)) return;
+        _processManager.Connect(config);
+    }
+
+    public static bool ConfirmPortConflicts(SSHProcessManager processManager, SSHTunnelConfig config)
+    {
+        var conflicts = processManager.CheckPortConflicts(config);
+        if (conflicts.Count == 0) return true;
+        return Views.Prompt.Confirm(
+            string.Format(Strings.PortConflictMessage, string.Join(", ", conflicts)),
+            Strings.PortConflict);
+    }
 
     [RelayCommand]
     private void DisconnectAll() => _processManager.DisconnectAll();
@@ -113,80 +146,78 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void ReloadSshConfig() => _sshConfigStore.Load();
 
-    [RelayCommand]
-    private void CopyShareString(SSHTunnelConfig config)
+    public void CopyShareString(SSHTunnelConfig config)
     {
-        var encoded = ShareService.Encode(config);
-        var ok = TryCopyToClipboard(encoded);
-        MessageBox.Show(
-            ok ? Strings.Copied : Strings.CopyFailed,
-            Strings.SSHTunnelManager,
-            MessageBoxButton.OK,
-            ok ? MessageBoxImage.Information : MessageBoxImage.Warning);
+        if (ClipboardHelper.TrySetText(ShareService.Encode(config)))
+            Views.Prompt.Info(Strings.Copied);
+        else
+            Views.Prompt.Warn(Strings.CopyFailed);
     }
 
-    private static bool TryCopyToClipboard(string text)
+    private bool _isCheckingForUpdates;
+
+    [RelayCommand]
+    private Task CheckForUpdates() => CheckForUpdatesAsync(userInitiated: true);
+
+    /// <summary>
+    /// Checks GitHub for a newer release. Background checks stay silent unless an update exists;
+    /// user-initiated checks always report back, including when the check itself failed.
+    /// </summary>
+    public async Task CheckForUpdatesAsync(bool userInitiated)
     {
-        for (int i = 0; i < 3; i++)
+        if (_isCheckingForUpdates) return;
+        _isCheckingForUpdates = true;
+        UpdateInfo? info;
+        try
+        {
+            info = await UpdateService.CheckForUpdateOrThrowAsync();
+        }
+        catch
+        {
+            if (userInitiated) Views.Prompt.Warn(Strings.UpdateCheckFailed, Strings.UpdateFailed);
+            return;
+        }
+        finally
+        {
+            _isCheckingForUpdates = false;
+        }
+
+        if (info == null)
+        {
+            if (userInitiated) Views.Prompt.Info(Strings.UpToDate);
+            return;
+        }
+
+        if (!Views.Prompt.Ask(string.Format(Strings.NewVersionAvailable, info.Version), Strings.UpdateAvailable))
+            return;
+
+        if (info.InstallerUrl != null)
         {
             try
             {
-                Clipboard.SetText(text);
-                if (Clipboard.GetText() == text) return true;
+                await UpdateService.PerformUpdateAsync(info.InstallerUrl, _ => { });
+                return;
             }
-            catch (System.Runtime.InteropServices.ExternalException) { }
-            System.Threading.Thread.Sleep(50);
+            catch { }
         }
-        return false;
+        Process.Start(new ProcessStartInfo { FileName = info.HtmlUrl, UseShellExecute = true });
     }
 
-    [RelayCommand]
-    private async Task CheckForUpdates()
+    /// <summary>Adds imported tunnels in one save and selects the first so the user lands on it.</summary>
+    public void ImportTunnels(System.Collections.Generic.IReadOnlyList<SSHTunnelConfig> configs)
     {
-        var info = await UpdateService.CheckForUpdateAsync();
-        if (info != null)
-        {
-            var result = MessageBox.Show(
-                string.Format(Strings.NewVersionAvailable, info.Version),
-                Strings.UpdateAvailable,
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Information);
-
-            if (result == MessageBoxResult.Yes)
-            {
-                if (info.InstallerUrl != null)
-                {
-                    try
-                    {
-                        await UpdateService.PerformUpdateAsync(info.InstallerUrl, _ => { });
-                    }
-                    catch
-                    {
-                        Process.Start(new ProcessStartInfo { FileName = info.HtmlUrl, UseShellExecute = true });
-                    }
-                }
-                else
-                {
-                    Process.Start(new ProcessStartInfo { FileName = info.HtmlUrl, UseShellExecute = true });
-                }
-            }
-        }
-        else
-        {
-            MessageBox.Show(
-                Strings.UpToDate,
-                Strings.SSHTunnelManager,
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
-        }
+        if (configs.Count == 0) return;
+        _configStore.AddRange(configs);
+        SelectedTunnelId = configs[0].Id;
     }
 
-    public void ImportFromShareString(string text)
+    public SSHTunnelConfig? ImportFromShareString(string text)
     {
         var config = ShareService.Decode(text);
-        if (config == null) return;
+        if (config == null) return null;
         _configStore.Add(config);
         SelectedTunnelId = config.Id;
+        return config;
     }
 
     public ConnectionState GetTunnelState(Guid id) => _status.GetState(id);

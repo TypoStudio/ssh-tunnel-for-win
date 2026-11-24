@@ -3,9 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:res="clr-namespace:SSHTunnel4Win.Resources"
         Title="{x:Static res:Strings.Settings}"
-        Width="420" Height="320" ResizeMode="NoResize"
+        Width="460" Height="340" ResizeMode="NoResize" ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner">
-    <TabControl Margin="8">
+    <DockPanel Margin="8">
+    <Button DockPanel.Dock="Bottom" Content="{x:Static res:Strings.Close}" IsCancel="True" IsDefault="True"
+            Style="{StaticResource DialogButton}" HorizontalAlignment="Right" Margin="0,8,0,0"/>
+    <TabControl>
         <TabItem Header="{x:Static res:Strings.General}">
             <StackPanel Margin="16">
                 <CheckBox Content="{x:Static res:Strings.LaunchAtLogin}"
@@ -14,16 +17,27 @@
                           IsChecked="{Binding Settings.OpenManagerOnLaunch}" Margin="0,0,0,8"/>
                 <CheckBox Content="{x:Static res:Strings.CheckForUpdatesAutomatically}"
                           IsChecked="{Binding Settings.AutoCheckForUpdates}" Margin="0,0,0,16"/>
-                <StackPanel Orientation="Horizontal">
-                    <Button Content="{x:Static res:Strings.CheckNow}"
+                <WrapPanel Orientation="Horizontal">
+                    <Button Content="{x:Static res:Strings.CheckNow}" Padding="10,2"
                             Command="{Binding CheckForUpdatesCommand}"
                             IsEnabled="{Binding IsCheckingUpdate, Converter={StaticResource InvBool}}"
                             Margin="0,0,8,0"/>
-                    <TextBlock Text="{Binding UpdateStatus}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                    <Button Content="{x:Static res:Strings.InstallAndRestart}"
+                    <TextBlock Text="{Binding UpdateStatus}" VerticalAlignment="Center" Margin="0,0,8,0" TextWrapping="Wrap"
+                               MaxWidth="300">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding UpdateCheckFailed}" Value="True">
+                                        <Setter Property="Foreground" Value="#C42B1C"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <Button Content="{x:Static res:Strings.InstallAndRestart}" Padding="10,2"
                             Command="{Binding InstallUpdateCommand}"
                             Visibility="{Binding IsUpdateAvailable, Converter={StaticResource BoolToVis}}"/>
-                </StackPanel>
+                </WrapPanel>
             </StackPanel>
         </TabItem>
         <TabItem Header="{x:Static res:Strings.About}">
@@ -66,4 +80,5 @@
             </StackPanel>
         </TabItem>
     </TabControl>
+    </DockPanel>
 </Window>

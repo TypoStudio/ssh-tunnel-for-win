@@ -3,30 +3,53 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:res="clr-namespace:SSHTunnel4Win.Resources"
         Title="{x:Static res:Strings.RunningSSHProcesses}"
-        Width="600" Height="400" ResizeMode="CanResize"
+        Width="680" Height="420" MinWidth="420" MinHeight="260"
+        ResizeMode="CanResizeWithGrip" ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner">
     <DockPanel Margin="16">
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,8">
-            <Button Content="{x:Static res:Strings.Refresh}" Click="RefreshClick" Margin="0,0,8,0"/>
-            <Button Content="{x:Static res:Strings.KillAll}" Click="KillAllClick"/>
+            <Button Click="RefreshClick" Style="{StaticResource DialogButton}" Margin="0,0,8,0">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="&#xE72C;" Style="{StaticResource IconGlyph}" FontSize="12" Margin="0,0,6,0"/>
+                    <TextBlock Text="{x:Static res:Strings.Refresh}"/>
+                </StackPanel>
+            </Button>
+            <Button x:Name="KillAllBtn" Content="{x:Static res:Strings.KillAll}" Click="KillAllClick"
+                    Style="{StaticResource DialogButton}"/>
         </StackPanel>
 
-        <Button DockPanel.Dock="Bottom" Content="{x:Static res:Strings.Close}" Click="CloseClick"
-                HorizontalAlignment="Right" Width="80" Margin="0,8,0,0"/>
+        <Button DockPanel.Dock="Bottom" Content="{x:Static res:Strings.Close}" IsCancel="True" IsDefault="True"
+                Style="{StaticResource DialogButton}" HorizontalAlignment="Right" Margin="0,8,0,0"/>
 
-        <DataGrid x:Name="ProcessGrid" AutoGenerateColumns="False" IsReadOnly="True"
-                  CanUserAddRows="False" SelectionMode="Single" GridLinesVisibility="Horizontal">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="{x:Static res:Strings.PID}" Binding="{Binding Pid}" Width="70"/>
-                <DataGridTextColumn Header="{x:Static res:Strings.Command}" Binding="{Binding CommandLine}" Width="*"/>
-                <DataGridTemplateColumn Width="60">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="{x:Static res:Strings.KillProcess}" Click="KillClick" Tag="{Binding Pid}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+        <Grid>
+            <DataGrid x:Name="ProcessGrid" AutoGenerateColumns="False" IsReadOnly="True"
+                      CanUserAddRows="False" SelectionMode="Single" GridLinesVisibility="Horizontal"
+                      HeadersVisibility="Column" AutomationProperties.Name="{x:Static res:Strings.RunningSSHProcesses}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="{x:Static res:Strings.PID}" Binding="{Binding Pid}" Width="70"/>
+                    <DataGridTextColumn Header="{x:Static res:Strings.Command}" Binding="{Binding CommandLine}" Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FontFamily" Value="Consolas"/>
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                <Setter Property="ToolTip" Value="{Binding CommandLine}"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTemplateColumn Width="Auto" MinWidth="64">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="{x:Static res:Strings.KillProcess}" Click="KillClick" Tag="{Binding Pid}"
+                                        Padding="10,0" Margin="2"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <TextBlock x:Name="EmptyText" Text="{x:Static res:Strings.NoProcesses}" Visibility="Collapsed"
+                       Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                       HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False"/>
+        </Grid>
     </DockPanel>
 </Window>

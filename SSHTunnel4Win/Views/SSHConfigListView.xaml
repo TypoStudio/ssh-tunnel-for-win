@@ -3,28 +3,61 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:res="clr-namespace:SSHTunnel4Win.Resources">
     <DockPanel>
-        <TextBox x:Name="SearchBox" DockPanel.Dock="Top" Margin="8,4"
-                 TextChanged="SearchChanged"/>
-        <ListBox x:Name="ConfigListBox" SelectionChanged="OnSelectionChanged"
-                 HorizontalContentAlignment="Stretch" BorderThickness="0">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Margin="4,2">
-                        <TextBlock Text="{Binding Host}" FontWeight="Medium"/>
-                        <TextBlock Text="{Binding FileName}" FontSize="11" Foreground="Gray"/>
-                        <StackPanel.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="{x:Static res:Strings.EnableDisable}" Click="ToggleComment"/>
-                                <Separator/>
-                                <MenuItem Header="{x:Static res:Strings.MoveUp}" Click="MoveUp"/>
-                                <MenuItem Header="{x:Static res:Strings.MoveDown}" Click="MoveDown"/>
-                                <Separator/>
-                                <MenuItem Header="{x:Static res:Strings.Delete}" Click="DeleteEntry"/>
-                            </ContextMenu>
-                        </StackPanel.ContextMenu>
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <!-- Search with placeholder -->
+        <Grid DockPanel.Dock="Top" Margin="8,4">
+            <TextBox x:Name="SearchBox" TextChanged="SearchChanged" Padding="2,3"
+                     VerticalContentAlignment="Center"
+                     AutomationProperties.Name="{x:Static res:Strings.Search}"/>
+            <TextBlock Text="{x:Static res:Strings.Search}" Style="{StaticResource PlaceholderText}"
+                       Visibility="{Binding Text, ElementName=SearchBox, Converter={StaticResource EmptyToVis}}"/>
+        </Grid>
+
+        <Grid>
+            <ListBox x:Name="ConfigListBox" SelectionChanged="OnSelectionChanged" KeyDown="OnListKeyDown"
+                     HorizontalContentAlignment="Stretch" BorderThickness="0"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     AutomationProperties.Name="{x:Static res:Strings.SSHConfig}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="4,3" Background="Transparent">
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Style.Triggers>
+                                        <!-- Commented-out (disabled) hosts are dimmed, not just prefixed with '#' -->
+                                        <DataTrigger Binding="{Binding IsDisabled}" Value="True">
+                                            <Setter Property="Opacity" Value="0.5"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                            <TextBlock Text="{Binding Host}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                            <TextBlock Text="{Binding Subtitle}" FontSize="11" Opacity="0.7" TextTrimming="CharacterEllipsis"/>
+                            <StackPanel.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="{x:Static res:Strings.EnableDisable}" Click="ToggleComment"/>
+                                    <Separator/>
+                                    <MenuItem Header="{x:Static res:Strings.MoveUp}" Click="MoveUp"/>
+                                    <MenuItem Header="{x:Static res:Strings.MoveDown}" Click="MoveDown"/>
+                                    <Separator/>
+                                    <MenuItem Header="{x:Static res:Strings.Delete}" Click="DeleteEntry" InputGestureText="Del"/>
+                                </ContextMenu>
+                            </StackPanel.ContextMenu>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <!-- Empty state -->
+            <StackPanel x:Name="EmptyState" HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Visibility="Collapsed" Margin="16">
+                <TextBlock Text="{x:Static res:Strings.NoHosts}" FontSize="16"
+                           Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                           HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                <TextBlock x:Name="EmptyHint" Text="{x:Static res:Strings.AddHostHint}"
+                           Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                           HorizontalAlignment="Center" TextWrapping="Wrap"
+                           TextAlignment="Center" MaxWidth="220"/>
+            </StackPanel>
+        </Grid>
     </DockPanel>
 </UserControl>
