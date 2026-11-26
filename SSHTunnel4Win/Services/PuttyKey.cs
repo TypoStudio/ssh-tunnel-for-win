@@ -140,6 +140,9 @@ public sealed class PuttyKey
                 throw Corrupt();
             // Argon2 itself rejects these (m >= 8p per RFC 9106) with exceptions callers don't expect
             if (passes < 1 || parallelism < 1 || memory < 8L * parallelism) throw Corrupt();
+            // Far beyond anything PuTTYgen writes (8 MiB, a few passes): a damaged value here would
+            // otherwise exhaust memory or hang the app
+            if (memory > 1 << 20 || passes > 1000 || parallelism > 64) throw Corrupt();
             salt = HexValue("Argon2-Salt");
         }
 

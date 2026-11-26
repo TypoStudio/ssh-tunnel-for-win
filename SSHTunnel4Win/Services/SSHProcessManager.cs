@@ -239,6 +239,7 @@ public class SSHProcessManager
         }
         catch (Exception ex)
         {
+            CleanupAskPassScript(id);
             CleanupConvertedKeyFile(id);
             Logs[id] = (Logs.TryGetValue(id, out var errLog) ? errLog : "") + $"ERROR: {ex.Message}\n";
             LogChanged?.Invoke(id);
@@ -538,7 +539,8 @@ public class SSHProcessManager
     /// <summary>True for the ssh -v lines printed when user authentication starts using the given key file.</summary>
     private static bool IsKeyOfferLine(string line, string keyFileName) =>
         line.Contains(keyFileName, StringComparison.OrdinalIgnoreCase) &&
-        (line.Contains("Will attempt key") || line.Contains("Offering public key") || line.Contains("Trying private key"));
+        // "Offering": OpenSSH before 7.8 put the key type in the middle ("Offering RSA public key")
+        (line.Contains("Will attempt key") || line.Contains("Offering ") || line.Contains("Trying private key"));
 
     /// <summary>
     /// Removes the secrets this run wrote to disk. Needed on exit because the process-exit handlers
