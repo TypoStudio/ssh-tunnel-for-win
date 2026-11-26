@@ -3,34 +3,44 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:res="clr-namespace:SSHTunnel4Win.Resources"
         Title="{x:Static res:Strings.AddPortForwardingFromCLI}"
-        Width="460" Height="320" ResizeMode="NoResize"
+        Width="480" Height="340" MinWidth="360" MinHeight="260"
+        ResizeMode="CanResizeWithGrip" ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner">
     <DockPanel Margin="16">
-        <!-- Buttons -->
+        <!-- Buttons: primary first, per Windows convention -->
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
-            <Button Content="{x:Static res:Strings.Cancel}" Width="80" Click="CancelClick" Margin="0,0,8,0"/>
-            <Button x:Name="AddBtn" Content="{x:Static res:Strings.Add}" Width="80" Click="AddClick" IsEnabled="False"/>
+            <Button x:Name="AddBtn" Content="{x:Static res:Strings.Add}" Style="{StaticResource DialogButton}"
+                    Click="AddClick" IsEnabled="False" IsDefault="True" Margin="0,0,8,0"/>
+            <Button Content="{x:Static res:Strings.Cancel}" Style="{StaticResource DialogButton}" IsCancel="True"/>
         </StackPanel>
 
         <!-- Hint -->
         <TextBlock DockPanel.Dock="Top" Text="{x:Static res:Strings.PasteForwardingOptionsHint}"
-                   TextWrapping="Wrap" Foreground="Gray" Margin="0,0,0,8"/>
+                   TextWrapping="Wrap" Margin="0,0,0,8"/>
 
         <!-- Preview -->
         <GroupBox DockPanel.Dock="Bottom" Header="{x:Static res:Strings.Preview}" Margin="0,8,0,0"
                   x:Name="PreviewBox" Visibility="Collapsed">
-            <ItemsControl x:Name="PreviewList" Margin="8">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding}" Foreground="Gray"/>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+            <ScrollViewer MaxHeight="90" VerticalScrollBarVisibility="Auto" Focusable="False">
+                <ItemsControl x:Name="PreviewList" Margin="8">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" FontFamily="Consolas"
+                                       Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
         </GroupBox>
+
+        <!-- Validation message, shown only when there is input we can't read -->
+        <TextBlock x:Name="InvalidText" DockPanel.Dock="Bottom" Text="{x:Static res:Strings.ForwardingNotRecognized}"
+                   Foreground="#C42B1C" TextWrapping="Wrap" Margin="0,6,0,0" Visibility="Collapsed"/>
 
         <!-- Input -->
         <TextBox x:Name="InputBox" AcceptsReturn="True" TextWrapping="Wrap"
                  VerticalScrollBarVisibility="Auto" FontFamily="Consolas" FontSize="12"
+                 AutomationProperties.Name="{x:Static res:Strings.PasteForwardingOptionsHint}"
                  TextChanged="InputChanged"/>
     </DockPanel>
 </Window>

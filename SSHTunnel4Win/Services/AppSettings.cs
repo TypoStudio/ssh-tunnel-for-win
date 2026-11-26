@@ -16,6 +16,7 @@ public partial class AppSettings : ObservableObject
     [ObservableProperty] private bool _launchAtLogin;
     [ObservableProperty] private bool _openManagerOnLaunch;
     [ObservableProperty] private bool _autoCheckForUpdates = true;
+    [ObservableProperty] private bool _hasShownTrayHint;
 
     public AppSettings()
     {
@@ -30,6 +31,7 @@ public partial class AppSettings : ObservableObject
 
     partial void OnOpenManagerOnLaunchChanged(bool value) => Save();
     partial void OnAutoCheckForUpdatesChanged(bool value) => Save();
+    partial void OnHasShownTrayHintChanged(bool value) => Save();
 
     private void Load()
     {
@@ -43,6 +45,7 @@ public partial class AppSettings : ObservableObject
                 _launchAtLogin = data.LaunchAtLogin;
                 _openManagerOnLaunch = data.OpenManagerOnLaunch;
                 _autoCheckForUpdates = data.AutoCheckForUpdates;
+                _hasShownTrayHint = data.HasShownTrayHint;
             }
             catch (Exception ex)
             {
@@ -68,6 +71,7 @@ public partial class AppSettings : ObservableObject
                         _launchAtLogin = data.LaunchAtLogin;
                         _openManagerOnLaunch = data.OpenManagerOnLaunch;
                         _autoCheckForUpdates = data.AutoCheckForUpdates;
+                        _hasShownTrayHint = data.HasShownTrayHint;
                         Save();
                     }
                 }
@@ -86,7 +90,8 @@ public partial class AppSettings : ObservableObject
             {
                 LaunchAtLogin = LaunchAtLogin,
                 OpenManagerOnLaunch = OpenManagerOnLaunch,
-                AutoCheckForUpdates = AutoCheckForUpdates
+                AutoCheckForUpdates = AutoCheckForUpdates,
+                HasShownTrayHint = HasShownTrayHint
             };
             var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(FilePath, json);
@@ -132,5 +137,6 @@ public partial class AppSettings : ObservableObject
         public bool LaunchAtLogin { get; set; }
         public bool OpenManagerOnLaunch { get; set; }
         public bool AutoCheckForUpdates { get; set; } = true;
+        public bool HasShownTrayHint { get; set; }
     }
 }

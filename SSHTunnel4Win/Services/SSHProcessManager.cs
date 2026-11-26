@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -18,6 +19,8 @@ public class SSHProcessManager
     private readonly Dictionary<Guid, Process> _processes = new();
     private readonly Dictionary<Guid, CancellationTokenSource> _connectTimers = new();
     private readonly Dictionary<Guid, string> _tempKeyFiles = new();
+    // Plaintext OpenSSH keys converted from .ppk files; deleted as soon as ssh has authenticated
+    private readonly Dictionary<Guid, string> _convertedKeyFiles = new();
     private readonly TunnelStatus _status;
 
     // Auto-reconnect state
@@ -35,6 +38,7 @@ public class SSHProcessManager
     public SSHProcessManager(TunnelStatus status)
     {
         _status = status;
+        DeleteStaleSecretFiles();
         _isNetworkAvailable = NetworkInterface.GetIsNetworkAvailable();
         NetworkChange.NetworkAvailabilityChanged += OnNetworkAvailabilityChanged;
     }
@@ -55,7 +59,8 @@ public class SSHProcessManager
         var conflicts = new List<ushort>();
         foreach (var entry in config.Tunnels)
         {
-            if (entry.LocalPort == 0) continue;
+            // -R listens on the SSH server, not on this PC, so a local bind test says nothing about it
+            if (entry.LocalPort == 0 || entry.Type == TunnelType.Remote) continue;
             try
             {
                 using var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -84,7 +89,19 @@ public class SSHProcessManager
 
         var sshExe = FindSshExe();
         Logs[id] = ""; // Initialize log before BuildArguments (which may append warnings)
-        var args = BuildArguments(config);
+        List<string> args;
+        try
+        {
+            args = BuildArguments(config);
+        }
+        catch (Exception e) when (e is PuttyKeyException or IOException or UnauthorizedAccessException)
+        {
+            // A key problem (e.g. missing passphrase) is reported up front instead of an obscure ssh failure
+            var message = e is PuttyKeyException pk ? PuttyKeyMessages.Describe(pk) : e.Message;
+            AppendLog(id, $"ERROR: {message}\n");
+            _status.SetState(id, ConnectionState.Error, message);
+            return;
+        }
         var cmdLine = string.Join(" ", args.Select(a => a.Contains(' ') ? $"\"{a}\"" : a));
 
         // Prepend command line to any warnings from BuildArguments
@@ -100,11 +117,13 @@ public class SSHProcessManager
         process.StartInfo.RedirectStandardError = true;
         process.StartInfo.RedirectStandardInput = true;
 
-        // SSH_ASKPASS for password auth
-        if (config.AuthMethod == AuthMethod.Password)
+        // SSH_ASKPASS answers the password prompt, or the passphrase prompt of an encrypted
+        // OpenSSH key (.ppk keys are decrypted by the app, so ssh never asks for those)
+        if (config.AuthMethod == AuthMethod.Password ||
+            (config.AuthMethod == AuthMethod.IdentityFile && !_convertedKeyFiles.ContainsKey(id)))
         {
             var password = CredentialService.GetPassword(config.Id);
-            if (password != null)
+            if (!string.IsNullOrEmpty(password))
             {
                 var askpass = CreateAskPassScript(password, config.Id);
                 process.StartInfo.EnvironmentVariables["SSH_ASKPASS"] = askpass;
@@ -114,6 +133,11 @@ public class SSHProcessManager
         }
 
         process.EnableRaisingEvents = true;
+
+        // With a jump host every hop logs "Authenticated to", and the hops come before ssh reads our
+        // key for the target. So wait until ssh has offered the key, then for the next success line.
+        var convertedKeyName = _convertedKeyFiles.TryGetValue(id, out var convertedKey) ? Path.GetFileName(convertedKey) : null;
+        var keyOffered = false;
 
         process.OutputDataReceived += (_, e) =>
         {
@@ -130,6 +154,14 @@ public class SSHProcessManager
             if (e.Data == null) return;
             Application.Current?.Dispatcher.Invoke(() =>
             {
+                // The plaintext copy of a .ppk key is no longer needed once ssh has used it
+                if (convertedKeyName != null)
+                {
+                    if (!keyOffered)
+                        keyOffered = IsKeyOfferLine(e.Data, convertedKeyName);
+                    else if (e.Data.Contains("Authenticated to"))
+                        CleanupConvertedKeyFile(id);
+                }
                 Logs[id] = (Logs.TryGetValue(id, out var log) ? log : "") + e.Data + "\n";
                 LogChanged?.Invoke(id);
             });
@@ -141,6 +173,7 @@ public class SSHProcessManager
             {
                 CleanupAskPassScript(id);
                 CleanupTempKeyFile(id);
+                CleanupConvertedKeyFile(id);
                 if (_connectTimers.TryGetValue(id, out var cts))
                 {
                     cts.Cancel();
@@ -161,7 +194,7 @@ public class SSHProcessManager
                         var lines = fullLog.TrimEnd('\n').Split('\n');
                         lastLog = string.Join("\n", lines.Length > 5 ? lines[^5..] : lines);
                     }
-                    var msg = $"Connection failed (exit {process.ExitCode})";
+                    var msg = string.Format(Resources.Strings.ConnectionFailedExit, process.ExitCode);
                     if (!string.IsNullOrEmpty(lastLog)) msg += "\n" + lastLog;
                     _status.SetState(id, ConnectionState.Error, msg);
                 }
@@ -206,6 +239,8 @@ public class SSHProcessManager
         }
         catch (Exception ex)
         {
+            CleanupAskPassScript(id);
+            CleanupConvertedKeyFile(id);
             Logs[id] = (Logs.TryGetValue(id, out var errLog) ? errLog : "") + $"ERROR: {ex.Message}\n";
             LogChanged?.Invoke(id);
             _status.SetState(id, ConnectionState.Error, ex.Message);
@@ -245,7 +280,8 @@ public class SSHProcessManager
 
     public void DisconnectAll()
     {
-        foreach (var id in _processes.Keys.ToList())
+        // Include tunnels waiting to auto-reconnect, otherwise they come back on their own
+        foreach (var id in _processes.Keys.Union(_pendingReconnect).ToList())
             Disconnect(id);
     }
 
@@ -347,6 +383,10 @@ public class SSHProcessManager
                     args.AddRange(new[] { "-i", keyPath });
                 }
                 args.AddRange(new[] { "-o", "PasswordAuthentication=no" });
+                // Connect answers the key's passphrase prompt through SSH_ASKPASS, which would answer a
+                // server's keyboard-interactive question just the same and so send it the passphrase
+                if (!_convertedKeyFiles.ContainsKey(config.Id) && !string.IsNullOrEmpty(CredentialService.GetPassword(config.Id)))
+                    args.AddRange(new[] { "-o", "KbdInteractiveAuthentication=no" });
                 break;
             case AuthMethod.Password:
                 args.AddRange(new[] { "-o", "PreferredAuthentications=password,keyboard-interactive" });
@@ -385,8 +425,16 @@ public class SSHProcessManager
     {
         var tempDir = Path.GetTempPath();
         var scriptPath = Path.Combine(tempDir, $"sshtunnel-askpass-{configId}.cmd");
-        var escaped = password.Replace("\"", "\\\"");
-        File.WriteAllText(scriptPath, $"@echo off\r\necho {escaped}\r\n");
+        // cmd.exe metacharacters must be caret-escaped (and % doubled) or the secret is mangled;
+        // "echo(" prints the text verbatim even if it is empty or looks like "on"/"off"
+        var escaped = new StringBuilder();
+        foreach (var c in password)
+        {
+            if (c is '^' or '&' or '|' or '<' or '>' or '(' or ')' or '"') escaped.Append('^');
+            if (c == '%') escaped.Append('%');
+            escaped.Append(c);
+        }
+        File.WriteAllText(scriptPath, $"@echo off\r\necho({escaped}\r\n");
         return scriptPath;
     }
 
@@ -402,6 +450,10 @@ public class SSHProcessManager
     /// </summary>
     private string ResolveKeyFile(string keyPath, Guid configId)
     {
+        // Windows OpenSSH can't read PuTTY keys: convert to a short-lived, user-only OpenSSH key
+        if (PuttyKey.IsPuttyKeyFile(keyPath))
+            return ConvertPuttyKey(keyPath, configId);
+
         // Detect UNC/network paths: \\server\share or \server\share
         var normalized = keyPath.Replace("/", @"\");
         var isUnc = normalized.StartsWith(@"\");
@@ -465,6 +517,68 @@ public class SSHProcessManager
             AppendLog(configId, $"[WARN] Failed to copy key file locally: {ex.Message}\n");
             return keyPath;
         }
+    }
+
+    private string ConvertPuttyKey(string keyPath, Guid configId)
+    {
+        var key = PuttyKey.Load(keyPath);
+        var passphrase = key.IsEncrypted ? CredentialService.GetPassword(configId) : null;
+        var pem = key.ToOpenSshPrivateKey(passphrase);
+        var path = SecureKeyFile.Write($"{configId}.key", pem);
+        _convertedKeyFiles[configId] = path;
+        AppendLog(configId, $"[INFO] Using PuTTY key {Path.GetFileName(keyPath)} ({key.Algorithm})\n");
+        return path;
+    }
+
+    private void CleanupConvertedKeyFile(Guid configId)
+    {
+        if (_convertedKeyFiles.Remove(configId, out var path))
+            SecureKeyFile.Delete(path);
+    }
+
+    /// <summary>True for the ssh -v lines printed when user authentication starts using the given key file.</summary>
+    private static bool IsKeyOfferLine(string line, string keyFileName) =>
+        line.Contains(keyFileName, StringComparison.OrdinalIgnoreCase) &&
+        // "Offering": OpenSSH before 7.8 put the key type in the middle ("Offering RSA public key")
+        (line.Contains("Will attempt key") || line.Contains("Offering ") || line.Contains("Trying private key"));
+
+    /// <summary>
+    /// Removes the secrets this run wrote to disk. Needed on exit because the process-exit handlers
+    /// are dispatched to the UI thread, which no longer runs them once the app is shutting down.
+    /// </summary>
+    public void CleanupSecretFiles()
+    {
+        foreach (var id in _convertedKeyFiles.Keys.ToList())
+            CleanupConvertedKeyFile(id);
+        foreach (var id in _processes.Keys)
+            CleanupAskPassScript(id);
+    }
+
+    /// <summary>A crash or a kill skips every cleanup, so secrets of an earlier run may still be in the temp folder.</summary>
+    private static void DeleteStaleSecretFiles()
+    {
+        try
+        {
+            foreach (var script in Directory.EnumerateFiles(Path.GetTempPath(), "sshtunnel-askpass-*.cmd"))
+            {
+                try { File.Delete(script); } catch { }
+            }
+
+            if (!Directory.Exists(SecureKeyFile.Directory)) return;
+            // Only converted keys ("{id}.key"): "{id}_{name}" files are copies of network keys that get reused
+            foreach (var key in Directory.EnumerateFiles(SecureKeyFile.Directory, "*.key"))
+            {
+                if (Guid.TryParse(Path.GetFileNameWithoutExtension(key), out _))
+                    SecureKeyFile.Delete(key);
+            }
+        }
+        catch { }
+    }
+
+    public void ClearLog(Guid configId)
+    {
+        Logs.Remove(configId);
+        LogChanged?.Invoke(configId);
     }
 
     private void AppendLog(Guid configId, string message)

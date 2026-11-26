@@ -20,12 +20,11 @@ public partial class ForwardingImportDialog : Window
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         // Auto-fill from clipboard if it holds forwarding rules
-        if (Clipboard.ContainsText())
-        {
-            var text = Clipboard.GetText();
-            if (ShareService.ParseForwardingEntries(text).Count > 0)
-                InputBox.Text = text;
-        }
+        var text = ClipboardHelper.TryGetText();
+        if (ShareService.ParseForwardingEntries(text).Count > 0)
+            InputBox.Text = text;
+        InputBox.Focus();
+        InputBox.SelectAll();
     }
 
     private void InputChanged(object sender, TextChangedEventArgs e)
@@ -35,18 +34,14 @@ public partial class ForwardingImportDialog : Window
             .Select(entry => $"{entry.Type.DisplayName()}: {entry.SshArgument}")
             .ToList();
         PreviewBox.Visibility = Entries.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+        InvalidText.Visibility = Entries.Count == 0 && !string.IsNullOrWhiteSpace(InputBox.Text)
+            ? Visibility.Visible
+            : Visibility.Collapsed;
         AddBtn.IsEnabled = Entries.Count > 0;
     }
 
     private void AddClick(object sender, RoutedEventArgs e)
     {
         DialogResult = true;
-        Close();
-    }
-
-    private void CancelClick(object sender, RoutedEventArgs e)
-    {
-        DialogResult = false;
-        Close();
     }
 }

@@ -25,41 +25,47 @@ public static class UpdateService
     {
         try
         {
-            using var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Accept", "application/vnd.github+json");
-            client.DefaultRequestHeaders.Add("User-Agent", "SSHTunnel4Win");
-            client.Timeout = TimeSpan.FromSeconds(10);
-
-            var response = await client.GetAsync(ApiUrl);
-            if (!response.IsSuccessStatusCode) return null;
-
-            var json = await response.Content.ReadAsStringAsync();
-            var release = JsonSerializer.Deserialize<GitHubRelease>(json);
-            if (release == null) return null;
-
-            var remoteVersion = release.TagName.StartsWith("v")
-                ? release.TagName[1..]
-                : release.TagName;
-
-            var currentVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "0.0.0";
-
-            if (!IsNewer(remoteVersion, currentVersion)) return null;
-
-            var installerUrl = release.Assets
-                .FirstOrDefault(a => a.Name.EndsWith(".exe") || a.Name.EndsWith(".msi"))
-                ?.BrowserDownloadUrl;
-
-            return new UpdateInfo
-            {
-                Version = remoteVersion,
-                HtmlUrl = release.HtmlUrl,
-                InstallerUrl = installerUrl
-            };
+            return await CheckForUpdateOrThrowAsync();
         }
         catch
         {
             return null;
         }
+    }
+
+    /// <summary>Like CheckForUpdateAsync, but lets the caller tell "up to date" apart from "couldn't check".</summary>
+    public static async Task<UpdateInfo?> CheckForUpdateOrThrowAsync()
+    {
+        using var client = new HttpClient();
+        client.DefaultRequestHeaders.Add("Accept", "application/vnd.github+json");
+        client.DefaultRequestHeaders.Add("User-Agent", "SSHTunnel4Win");
+        client.Timeout = TimeSpan.FromSeconds(10);
+
+        var response = await client.GetAsync(ApiUrl);
+        response.EnsureSuccessStatusCode();
+
+        var json = await response.Content.ReadAsStringAsync();
+        var release = JsonSerializer.Deserialize<GitHubRelease>(json)
+            ?? throw new InvalidDataException("Empty release response");
+
+        var remoteVersion = release.TagName.StartsWith("v")
+            ? release.TagName[1..]
+            : release.TagName;
+
+        var currentVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "0.0.0";
+
+        if (!IsNewer(remoteVersion, currentVersion)) return null;
+
+        var installerUrl = release.Assets
+            .FirstOrDefault(a => a.Name.EndsWith(".exe") || a.Name.EndsWith(".msi"))
+            ?.BrowserDownloadUrl;
+
+        return new UpdateInfo
+        {
+            Version = remoteVersion,
+            HtmlUrl = release.HtmlUrl,
+            InstallerUrl = installerUrl
+        };
     }
 
     public static async Task PerformUpdateAsync(string downloadUrl, Action<double> progressHandler)

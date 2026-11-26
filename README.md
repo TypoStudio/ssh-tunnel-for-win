@@ -47,6 +47,7 @@ dotnet build SSHTunnel4Win.sln -c Release
 - [x] Identity file (private key) selection
 - [x] Password stored securely via Windows DPAPI
 - [x] Additional SSH arguments support
+- [x] PuTTY `.ppk` keys (format v2/v3, including passphrase-protected keys)
 
 ### Share & Import
 - [x] Share tunnel configs as `sshtunnel://` URLs
@@ -54,6 +55,7 @@ dotnet build SSHTunnel4Win.sln -c Release
 - [x] Copy equivalent CLI command (`ssh -L ...`)
 - [x] Create a tunnel config from an `ssh` command line
 - [x] Add port forwarding rules from CLI options (`-L` / `-R` / `-D`)
+- [x] Import saved PuTTY / KiTTY sessions, with their keys, port forwardings and cached host keys
 
 ### System Tray
 - [x] Quick connect / disconnect from the system tray

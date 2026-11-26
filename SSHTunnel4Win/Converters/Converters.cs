@@ -10,15 +10,29 @@ namespace SSHTunnel4Win.Converters;
 
 public class ConnectionStateToColorConverter : IValueConverter
 {
+    // Mid-tone colors that stay visible on both white and selection-highlight backgrounds
+    private static readonly Brush DisconnectedBrush = Freeze(Color.FromRgb(0x8A, 0x8A, 0x8A));
+    private static readonly Brush ConnectingBrush = Freeze(Color.FromRgb(0xE0, 0x8E, 0x00));
+    private static readonly Brush ConnectedBrush = Freeze(Color.FromRgb(0x10, 0x8A, 0x3C));
+    private static readonly Brush ErrorBrush = Freeze(Color.FromRgb(0xD1, 0x34, 0x38));
+
+    private static Brush Freeze(Color color)
+    {
+        var brush = new SolidColorBrush(color);
+        brush.Freeze();
+        return brush;
+    }
+
+    public static Brush For(ConnectionState state) => state switch
+    {
+        ConnectionState.Connecting => ConnectingBrush,
+        ConnectionState.Connected => ConnectedBrush,
+        ConnectionState.Error => ErrorBrush,
+        _ => DisconnectedBrush
+    };
+
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-        value is ConnectionState state ? state switch
-        {
-            ConnectionState.Disconnected => Brushes.Gray,
-            ConnectionState.Connecting => Brushes.Gold,
-            ConnectionState.Connected => Brushes.Green,
-            ConnectionState.Error => Brushes.Red,
-            _ => Brushes.Gray
-        } : Brushes.Gray;
+        value is ConnectionState state ? For(state) : DisconnectedBrush;
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
         throw new NotSupportedException();
@@ -26,15 +40,17 @@ public class ConnectionStateToColorConverter : IValueConverter
 
 public class ConnectionStateToLabelConverter : IValueConverter
 {
+    public static string For(ConnectionState state) => state switch
+    {
+        ConnectionState.Disconnected => Strings.Disconnected,
+        ConnectionState.Connecting => Strings.Connecting,
+        ConnectionState.Connected => Strings.Connected,
+        ConnectionState.Error => Strings.Error,
+        _ => ""
+    };
+
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-        value is ConnectionState state ? state switch
-        {
-            ConnectionState.Disconnected => Strings.Disconnected,
-            ConnectionState.Connecting => Strings.Connecting,
-            ConnectionState.Connected => Strings.Connected,
-            ConnectionState.Error => Strings.Error,
-            _ => ""
-        } : "";
+        value is ConnectionState state ? For(state) : "";
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
         throw new NotSupportedException();
@@ -88,6 +104,25 @@ public class TunnelTypeToVisibilityConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
         value is TunnelType.Dynamic ? Visibility.Collapsed : Visibility.Visible;
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
+        throw new NotSupportedException();
+}
+
+public class CountToVisibilityConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
+        value is int count && count > 0 ? Visibility.Visible : Visibility.Collapsed;
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
+        throw new NotSupportedException();
+}
+
+/// <summary>Visible when the string is empty; used for TextBox placeholder overlays.</summary>
+public class EmptyStringToVisibilityConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
+        string.IsNullOrEmpty(value as string) ? Visibility.Visible : Visibility.Collapsed;
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
         throw new NotSupportedException();

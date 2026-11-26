@@ -1,5 +1,4 @@
 using System.Windows;
-using SSHTunnel4Win.Converters;
 using SSHTunnel4Win.ViewModels;
 
 namespace SSHTunnel4Win.Views;
@@ -10,6 +9,5 @@ public partial class SettingsWindow : Window
     {
         InitializeComponent();
         DataContext = vm;
-        Resources.Add("InvBool", new InverseBoolConverter());
     }
 }
