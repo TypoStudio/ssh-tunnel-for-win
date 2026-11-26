@@ -22,7 +22,7 @@
         <PasswordBox x:Name="PassphraseBox" PasswordChanged="PassphraseChanged" Padding="2,3"
                      AutomationProperties.Name="{x:Static res:Strings.PassphraseTitle}"/>
         <TextBlock x:Name="ErrorText" Text="{x:Static res:Strings.KeyErrorWrongPassphrase}" Foreground="#C42B1C"
-                   Margin="0,6,0,0" Visibility="Collapsed"/>
+                   TextWrapping="Wrap" Margin="0,6,0,0" Visibility="Collapsed"/>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
             <Button x:Name="OkBtn" Content="{x:Static res:Strings.OK}" Style="{StaticResource DialogButton}"

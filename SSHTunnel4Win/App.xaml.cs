@@ -20,7 +20,9 @@ namespace SSHTunnel4Win;
 public partial class App : Application
 {
     private const string MutexName = "SSHTunnel4Win_SingleInstance";
-    private static readonly string PipeName = $"SSHTunnel4Win_Activate_{Environment.UserName}";
+    // The mutex is per Windows session, so the pipe must be too: the same user can be signed in twice (console + RDP)
+    private static readonly string PipeName =
+        $"SSHTunnel4Win_Activate_{Environment.UserName}_{System.Diagnostics.Process.GetCurrentProcess().SessionId}";
 
     private static Mutex? _mutex;
     private TaskbarIcon? _trayIcon;
@@ -313,6 +315,8 @@ public partial class App : Application
     {
         // SystemEvents is static; unhook so it doesn't keep a reference to a dead app
         SystemEvents.UserPreferenceChanged -= OnUserPreferenceChanged;
+        // _vm is still null when this copy only handed off to a running instance
+        _vm?.ProcessManager.CleanupSecretFiles();
         _trayIcon?.Dispose();
         _mutex?.ReleaseMutex();
         base.OnExit(e);

@@ -149,7 +149,9 @@ public class SSHTunnelConfig
     [JsonIgnore]
     public bool IsConnectable =>
         !string.IsNullOrWhiteSpace(Host) && !string.IsNullOrWhiteSpace(Username) &&
-        Tunnels.Count > 0 && Tunnels.TrueForAll(t => t.IsComplete);
+        // Forwardings may also be given only as additional arguments (e.g. "-D 1080")
+        (Tunnels.Count > 0 || !string.IsNullOrWhiteSpace(AdditionalArgs)) &&
+        Tunnels.TrueForAll(t => t.IsComplete);
 
     public SSHTunnelConfig Clone() => new()
     {

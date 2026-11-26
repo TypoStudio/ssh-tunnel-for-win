@@ -195,13 +195,14 @@ public partial class PuttyImportDialog : Window
         }
 
         var configs = selected.Select(i => PuttySessionImporter.ToTunnelConfig(i.Session)).ToList();
-        _vm.ImportTunnels(configs);
 
+        // Saved first: importing selects a tunnel, and its detail view reads the passphrase right away
         for (int i = 0; i < selected.Count; i++)
         {
             if (passphrases.TryGetValue(selected[i].Session.KeyFile, out var passphrase))
                 CredentialService.SavePassword(passphrase, configs[i].Id);
         }
+        _vm.ImportTunnels(configs);
 
         HostKeyImportResult? hostKeys = null;
         if (HostKeysBox.IsChecked == true)

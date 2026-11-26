@@ -40,6 +40,12 @@ public partial class PassphraseDialog : Window
         {
             ok = _key.CheckPassphrase(PassphraseBox.Password);
         }
+        catch (PuttyKeyException ex)
+        {
+            // Not a wrong passphrase: the file itself can't be read, so say that and leave Skip as the way out
+            ErrorText.Text = PuttyKeyMessages.Describe(ex);
+            ok = false;
+        }
         finally
         {
             Mouse.OverrideCursor = null;

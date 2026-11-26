@@ -55,7 +55,7 @@ public sealed class PuttyKey
     public bool IsEncrypted => Encryption != "none";
 
     private byte[] _privateBlob = Array.Empty<byte>();
-    private string _mac = "";
+    private byte[] _mac = Array.Empty<byte>();
     private string _kdf = "";
     private int _argonMemory, _argonPasses, _argonParallelism;
     private byte[] _argonSalt = Array.Empty<byte>();
@@ -106,6 +106,12 @@ public sealed class PuttyKey
             catch (FormatException) { throw Corrupt(); }
         }
 
+        byte[] HexValue(string header)
+        {
+            try { return Convert.FromHexString(Header(header).Trim()); }
+            catch (FormatException) { throw Corrupt(); }
+        }
+
         var first = lines.Length > 0 ? lines[0] : "";
         if (!first.StartsWith("PuTTY-User-Key-File-"))
             throw new PuttyKeyException(PuttyKeyError.NotAPuttyKey, "Not a PuTTY private key file.");
@@ -132,11 +138,13 @@ public sealed class PuttyKey
                 !int.TryParse(Header("Argon2-Passes"), out passes) ||
                 !int.TryParse(Header("Argon2-Parallelism"), out parallelism))
                 throw Corrupt();
-            salt = Convert.FromHexString(Header("Argon2-Salt"));
+            // Argon2 itself rejects these (m >= 8p per RFC 9106) with exceptions callers don't expect
+            if (passes < 1 || parallelism < 1 || memory < 8L * parallelism) throw Corrupt();
+            salt = HexValue("Argon2-Salt");
         }
 
         var privateBlob = Base64Lines("Private-Lines");
-        var mac = Header("Private-MAC").Trim().ToLowerInvariant();
+        var mac = HexValue("Private-MAC");
 
         return new PuttyKey
         {
@@ -251,7 +259,7 @@ public sealed class PuttyKey
         var computed = Version == 2 ? HMACSHA1.HashData(macKey, data) : HMACSHA256.HashData(macKey, data);
         CryptographicOperations.ZeroMemory(data);
 
-        if (!CryptographicOperations.FixedTimeEquals(computed, Convert.FromHexString(_mac)))
+        if (!CryptographicOperations.FixedTimeEquals(computed, _mac))
         {
             CryptographicOperations.ZeroMemory(plain);
             throw IsEncrypted
@@ -356,7 +364,15 @@ public sealed class PuttyKey
                 {
                     var pk = pub.ReadBytes();
                     var seed = privReader.ReadBytes();
-                    if (pk.Length != 32 || seed.Length != 32) throw Corrupt();
+                    if (pk.Length != 32 || seed.Length > 32) throw Corrupt();
+                    if (seed.Length < 32)
+                    {
+                        // PuTTYgen before 0.75 stored the seed as a little-endian integer, dropping its trailing zero bytes
+                        var full = new byte[32];
+                        seed.CopyTo(full, 0);
+                        CryptographicOperations.ZeroMemory(seed);
+                        seed = full;
+                    }
                     section.WriteString(pk);
                     // OpenSSH stores the 32-byte seed followed by the public key
                     var sk = Concat(seed, pk);

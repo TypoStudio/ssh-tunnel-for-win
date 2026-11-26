@@ -38,6 +38,7 @@ public class SSHProcessManager
     public SSHProcessManager(TunnelStatus status)
     {
         _status = status;
+        DeleteStaleSecretFiles();
         _isNetworkAvailable = NetworkInterface.GetIsNetworkAvailable();
         NetworkChange.NetworkAvailabilityChanged += OnNetworkAvailabilityChanged;
     }
@@ -133,6 +134,11 @@ public class SSHProcessManager
 
         process.EnableRaisingEvents = true;
 
+        // With a jump host every hop logs "Authenticated to", and the hops come before ssh reads our
+        // key for the target. So wait until ssh has offered the key, then for the next success line.
+        var convertedKeyName = _convertedKeyFiles.TryGetValue(id, out var convertedKey) ? Path.GetFileName(convertedKey) : null;
+        var keyOffered = false;
+
         process.OutputDataReceived += (_, e) =>
         {
             if (e.Data == null) return;
@@ -148,9 +154,14 @@ public class SSHProcessManager
             if (e.Data == null) return;
             Application.Current?.Dispatcher.Invoke(() =>
             {
-                // ssh -v prints this once the key has been used; the plaintext copy is no longer needed
-                if (e.Data.Contains("Authenticated to"))
-                    CleanupConvertedKeyFile(id);
+                // The plaintext copy of a .ppk key is no longer needed once ssh has used it
+                if (convertedKeyName != null)
+                {
+                    if (!keyOffered)
+                        keyOffered = IsKeyOfferLine(e.Data, convertedKeyName);
+                    else if (e.Data.Contains("Authenticated to"))
+                        CleanupConvertedKeyFile(id);
+                }
                 Logs[id] = (Logs.TryGetValue(id, out var log) ? log : "") + e.Data + "\n";
                 LogChanged?.Invoke(id);
             });
@@ -371,6 +382,10 @@ public class SSHProcessManager
                     args.AddRange(new[] { "-i", keyPath });
                 }
                 args.AddRange(new[] { "-o", "PasswordAuthentication=no" });
+                // Connect answers the key's passphrase prompt through SSH_ASKPASS, which would answer a
+                // server's keyboard-interactive question just the same and so send it the passphrase
+                if (!_convertedKeyFiles.ContainsKey(config.Id) && !string.IsNullOrEmpty(CredentialService.GetPassword(config.Id)))
+                    args.AddRange(new[] { "-o", "KbdInteractiveAuthentication=no" });
                 break;
             case AuthMethod.Password:
                 args.AddRange(new[] { "-o", "PreferredAuthentications=password,keyboard-interactive" });
@@ -518,6 +533,44 @@ public class SSHProcessManager
     {
         if (_convertedKeyFiles.Remove(configId, out var path))
             SecureKeyFile.Delete(path);
+    }
+
+    /// <summary>True for the ssh -v lines printed when user authentication starts using the given key file.</summary>
+    private static bool IsKeyOfferLine(string line, string keyFileName) =>
+        line.Contains(keyFileName, StringComparison.OrdinalIgnoreCase) &&
+        (line.Contains("Will attempt key") || line.Contains("Offering public key") || line.Contains("Trying private key"));
+
+    /// <summary>
+    /// Removes the secrets this run wrote to disk. Needed on exit because the process-exit handlers
+    /// are dispatched to the UI thread, which no longer runs them once the app is shutting down.
+    /// </summary>
+    public void CleanupSecretFiles()
+    {
+        foreach (var id in _convertedKeyFiles.Keys.ToList())
+            CleanupConvertedKeyFile(id);
+        foreach (var id in _processes.Keys)
+            CleanupAskPassScript(id);
+    }
+
+    /// <summary>A crash or a kill skips every cleanup, so secrets of an earlier run may still be in the temp folder.</summary>
+    private static void DeleteStaleSecretFiles()
+    {
+        try
+        {
+            foreach (var script in Directory.EnumerateFiles(Path.GetTempPath(), "sshtunnel-askpass-*.cmd"))
+            {
+                try { File.Delete(script); } catch { }
+            }
+
+            if (!Directory.Exists(SecureKeyFile.Directory)) return;
+            // Only converted keys ("{id}.key"): "{id}_{name}" files are copies of network keys that get reused
+            foreach (var key in Directory.EnumerateFiles(SecureKeyFile.Directory, "*.key"))
+            {
+                if (Guid.TryParse(Path.GetFileNameWithoutExtension(key), out _))
+                    SecureKeyFile.Delete(key);
+            }
+        }
+        catch { }
     }
 
     public void ClearLog(Guid configId)
